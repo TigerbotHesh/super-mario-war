@@ -707,38 +707,102 @@ MenuCodeEnum MI_TeamSelect::SendInput(CPlayerInput * playerInput)
 					FindNewTeam(iPlayer, 1);
 			}
 
-			if(playerKeys->menu_up.fPressed && !game_values.randomskin[iPlayer])
+			//Scroll up/down through player skins
+			if(!game_values.randomskin[iPlayer])
 			{
-				do
+				if(playerKeys->menu_up.fPressed)
 				{
-					if(playerKeys->menu_down.fDown)
+					do
 					{
-						game_values.skinids[iPlayer] = rand() % skinlist.GetCount();
+						if(playerKeys->menu_down.fDown)
+						{
+							game_values.skinids[iPlayer] = rand() % skinlist.GetCount();
+						}
+						else
+						{
+							if(--game_values.skinids[iPlayer] < 0)
+								game_values.skinids[iPlayer] = (short)skinlist.GetCount() - 1;
+						}
+					}
+					while(!LoadMenuSkin(iPlayer, game_values.skinids[iPlayer], game_values.colorids[iPlayer], false));
+				}
+				else if(playerKeys->menu_up.fDown)
+				{
+					if(iFastScroll[iPlayer] == 0)
+					{
+						if(++iFastScrollTimer[iPlayer] > 40)
+						{
+							iFastScroll[iPlayer] = 1;
+						}
 					}
 					else
 					{
-						if(--game_values.skinids[iPlayer] < 0)
-							game_values.skinids[iPlayer] = (short)skinlist.GetCount() - 1;
+						if(++iFastScrollTimer[iPlayer] > 5)
+						{
+							do
+							{
+								if(--game_values.skinids[iPlayer] < 0)
+									game_values.skinids[iPlayer] = (short)skinlist.GetCount() - 1;
+							}
+							while(!LoadMenuSkin(iPlayer, game_values.skinids[iPlayer], game_values.colorids[iPlayer], false));
+
+							iFastScrollTimer[iPlayer] = 0;
+						}
 					}
 				}
-				while(!LoadMenuSkin(iPlayer, game_values.skinids[iPlayer], game_values.colorids[iPlayer], false));
-			}
 
-			if(playerKeys->menu_down.fPressed && !game_values.randomskin[iPlayer])
-			{
-				do
+				if(playerKeys->menu_down.fPressed)
 				{
-					if(playerKeys->menu_up.fDown)
+					do
 					{
-						game_values.skinids[iPlayer] = rand() % skinlist.GetCount();
+						if(playerKeys->menu_up.fDown)
+						{
+							game_values.skinids[iPlayer] = rand() % skinlist.GetCount();
+						}
+						else
+						{
+							if(++game_values.skinids[iPlayer] >= skinlist.GetCount())
+								game_values.skinids[iPlayer] = 0;
+						}
+					}								
+					while(!LoadMenuSkin(iPlayer, game_values.skinids[iPlayer], game_values.colorids[iPlayer], false));
+				}
+				else if(playerKeys->menu_down.fDown)
+				{
+					if(iFastScroll[iPlayer] == 0)
+					{
+						if(++iFastScrollTimer[iPlayer] > 40)
+						{
+							iFastScroll[iPlayer] = 1;
+						}
 					}
 					else
 					{
-						if(++game_values.skinids[iPlayer] >= skinlist.GetCount())
-							game_values.skinids[iPlayer] = 0;
+						if(++iFastScrollTimer[iPlayer] > 5)
+						{
+							do
+							{
+								if(++game_values.skinids[iPlayer] >= skinlist.GetCount())
+									game_values.skinids[iPlayer] = 0;
+							}
+							while(!LoadMenuSkin(iPlayer, game_values.skinids[iPlayer], game_values.colorids[iPlayer], false));
+
+							iFastScrollTimer[iPlayer] = 0;
+						}
 					}
-				}								
-				while(!LoadMenuSkin(iPlayer, game_values.skinids[iPlayer], game_values.colorids[iPlayer], false));
+				}
+				
+				if((!playerKeys->menu_up.fDown && !playerKeys->menu_down.fDown) ||
+					(playerKeys->menu_up.fDown && playerKeys->menu_down.fDown))
+				{
+					iFastScroll[iPlayer] = 0;
+					iFastScrollTimer[iPlayer] = 0;
+				}
+			}
+			else
+			{
+				iFastScroll[iPlayer] = 0;
+				iFastScrollTimer[iPlayer] = 0;
 			}
 
 			if(playerKeys->menu_random.fPressed)
@@ -962,6 +1026,9 @@ void MI_TeamSelect::Reset()
 
 	for(short iPlayer = 0; iPlayer < 4; iPlayer++)
 	{
+		iFastScroll[iPlayer] = 0;
+		iFastScrollTimer[iPlayer] = 0;
+
 		if(game_values.playercontrol[iPlayer] == 1)
 		{
 			fReady[iPlayer] = false;
@@ -4307,11 +4374,8 @@ void MI_World::Update()
 	bool iShowStoredItems = false;
 	for(short iTeam = 0; iTeam < 4; iTeam++)
 	{
-		if(iStateTransition[iTeam] == 1 || iStateTransition[iTeam] == 3)
-		{
-			iShowStoredItems = true;
+		if(iShowStoredItems = iStateTransition[iTeam] == 1 || iStateTransition[iTeam] == 3)
 			break;
-		}
 	}
 
 	if(iShowStoredItems && iStoredItemPopupDrawY < 16)
@@ -4566,9 +4630,7 @@ MenuCodeEnum MI_World::SendInput(CPlayerInput * playerInput)
 		if(!fNoInterestingMoves)
 		{
 			fNeedAiControl = true;
-
-			short iTeamMember;
-			for(iTeamMember = 0; iTeamMember < game_values.teamcounts[iControllingTeam]; iTeamMember++)
+			for(short iTeamMember = 0; iTeamMember < game_values.teamcounts[iControllingTeam]; iTeamMember++)
 			{
 				if(game_values.playercontrol[game_values.teamids[iControllingTeam][iTeamMember]] == 1)
 				{
@@ -4587,7 +4649,7 @@ MenuCodeEnum MI_World::SendInput(CPlayerInput * playerInput)
 
 					//Clear out all input from cpu controlled team
 					COutputControl * playerKeys = NULL;
-					for(iTeamMember = 0; iTeamMember < game_values.teamcounts[iControllingTeam]; iTeamMember++)
+					for(short iTeamMember = 0; iTeamMember < game_values.teamcounts[iControllingTeam]; iTeamMember++)
 					{
 						playerKeys = &game_values.playerInput.outputControls[game_values.teamids[iControllingTeam][iTeamMember]];
 
