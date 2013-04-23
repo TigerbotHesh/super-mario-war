@@ -7,7 +7,7 @@
 | start:		1.1.2008									|
 | last changes:	1.10.2009									|
 |															|
-|	© 2003-2009 Florian Hufsky <florian.hufsky@gmail.com>	|
+|  (C) 2003-2009 Florian Hufsky <florian.hufsky@gmail.com>	|
 +----------------------------------------------------------*/
 
 //TODO:
@@ -128,8 +128,8 @@ gfxSprite		spr_blocks[3];
 gfxSprite		spr_unknowntile[3];
 
 //// Global stuff that the map editor doesn't need, but has references to
-GraphicsList menugraphicspacklist;
-GraphicsList gamegraphicspacklist;
+GraphicsList *menugraphicspacklist;
+GraphicsList *gamegraphicspacklist;
 FiltersList *filterslist;
 gfxSprite		spr_warplock;
 short			x_shake = 0;
@@ -178,7 +178,7 @@ sfxSound		sfx_kicksound;
 sfxSound		sfx_mip;
 sfxSound		sfx_transform;
 
-SkinList		skinlist;
+SkinList		*skinlist;
 gfxSprite		**spr_player[4];
 CGameMode		*gamemodes[GAMEMODE_LAST];
 bool			fResumeMusic;
@@ -253,7 +253,7 @@ void AddWarpToTile(short iCol, short iRow, short iType);
 void RemoveWarpFromTile(short iCol, short iRow);
 
 WorldMap g_worldmap;
-WorldList worldlist;
+WorldList *worldlist;
 void loadcurrentworld();
 int savecurrentworld();
 int findcurrentstring();
@@ -290,7 +290,11 @@ short g_musiccategorydisplaytimer = 0;
 short g_messagedisplaytimer = 0;
 std::string g_szMessageTitle = "";
 std::string g_szMessageLine[3];
-void SetDisplayMessage(short iTime, char * szTitle, char * szLine1, char * szLine2, char * szLine3);
+void SetDisplayMessage(short iTime,
+					   const char *szTitle,
+					   const char *szLine1,
+					   const char *szLine2,
+					   const char *szLine3);
 void DrawMessage();
 
 //Menu keys to use for menus
@@ -551,8 +555,8 @@ int main(int argc, char *argv[])
 
 	SetupDefaultGameModeSettings();
 
-	worldlist.find(findstring);
-	game_values.worldindex = worldlist.GetCurrentIndex();
+	worldlist->find(findstring);
+	game_values.worldindex = worldlist->GetCurrentIndex();
 	loadcurrentworld();
 	
 	if(saved_row >= 0 && saved_row <= iWorldHeight - 15 && saved_col >= 0 && saved_col <= iWorldWidth - 20)
@@ -1013,7 +1017,7 @@ int main(int argc, char *argv[])
 		fwrite(&draw_offset_col, sizeof(int), 1, fp);
 		fwrite(&draw_offset_row, sizeof(int), 1, fp);
 		fwrite(&g_fFullScreen, sizeof(bool), 1, fp);
-		fprintf(fp, worldlist.current_name());
+		fprintf(fp, worldlist->current_name());
 		fclose(fp);
 	}
 	
@@ -1307,9 +1311,9 @@ int editor_edit()
 						if(event.key.keysym.sym == SDLK_PAGEUP)
 						{
 							if(--game_values.worldindex < 0)
-								game_values.worldindex = worldlist.GetCount() - 1;
+								game_values.worldindex = worldlist->GetCount() - 1;
 
-							worldlist.prev();
+							worldlist->prev();
 
 							loadcurrentworld();
 
@@ -1318,10 +1322,10 @@ int editor_edit()
 
 						if(event.key.keysym.sym == SDLK_PAGEDOWN)
 						{
-							if(++game_values.worldindex >= worldlist.GetCount())
+							if(++game_values.worldindex >= worldlist->GetCount())
 								game_values.worldindex = 0;
 
-							worldlist.next();
+							worldlist->next();
 
 							loadcurrentworld();
 
@@ -2049,7 +2053,7 @@ int editor_edit()
 			if(fAutoPaint)
 				menu_font_small.draw(0, 16, "Auto Paint");
 
-			menu_font_small.drawRightJustified(640, 0, worldlist.current_name());
+			menu_font_small.drawRightJustified(640, 0, worldlist->current_name());
 			
 
 			if(--g_musiccategorydisplaytimer > 0)
@@ -2917,7 +2921,7 @@ int editor_warp()
 
 		spr_warps[0].draw(0, 0, 0, 0, 320, 32);
 
-		menu_font_small.drawRightJustified(640, 0, worldlist.current_name());
+		menu_font_small.drawRightJustified(640, 0, worldlist->current_name());
 
 		DrawMessage();
 		SDL_Flip(screen);
@@ -3066,7 +3070,7 @@ int editor_start_items()
 				spr_storedpoweruplarge.draw(rPickedItemDst[iPickedItem].x, rPickedItemDst[iPickedItem].y, iPowerup << 5, 0, 32, 32);
 		}
 
-		menu_font_small.drawRightJustified(640, 0, worldlist.current_name());
+		menu_font_small.drawRightJustified(640, 0, worldlist->current_name());
 
 		DrawMessage();
 		SDL_Flip(screen);
@@ -3146,7 +3150,7 @@ int editor_boundary()
 
 		spr_worldforegroundspecial[0].draw(0, 0, 0, 0, 320, 320);
 		
-		menu_font_small.drawRightJustified(640, 0, worldlist.current_name());
+		menu_font_small.drawRightJustified(640, 0, worldlist->current_name());
 
 		DrawMessage();
 		SDL_Flip(screen);
@@ -3234,7 +3238,7 @@ int editor_type()
 
 		spr_worldforegroundspecial[0].draw(64, 0, 448, 64, 128, 32);
 		
-		menu_font_small.drawRightJustified(640, 0, worldlist.current_name());
+		menu_font_small.drawRightJustified(640, 0, worldlist->current_name());
 
 		DrawMessage();
 		SDL_Flip(screen);
@@ -3876,7 +3880,7 @@ int editor_vehicles()
 		mCurrentMenu->Update();
 		mCurrentMenu->Draw();
 
-		menu_font_small.drawRightJustified(640, 0, worldlist.current_name());
+		menu_font_small.drawRightJustified(640, 0, worldlist->current_name());
 				
 		DrawMessage();
 		SDL_Flip(screen);
@@ -4987,7 +4991,7 @@ int editor_stage()
 				menu_font_small.draw(0, 480 - menu_font_small.getHeight(), "[LMB] Select Items, [LMB] Remove Items");
 		}
 
-		menu_font_small.drawRightJustified(640, 0, worldlist.current_name());
+		menu_font_small.drawRightJustified(640, 0, worldlist->current_name());
 		
 		DrawMessage();
 		SDL_Flip(screen);
@@ -5153,9 +5157,9 @@ int save_as()
 
 	if(dialog("Save As", "Enter name:", fileName, 64))
 	{
-		worldlist.add(strcat(mapLocation, strcat(fileName, ".txt")));
-		worldlist.find(fileName);
-		game_values.worldindex = worldlist.GetCurrentIndex();
+		worldlist->add(strcat(mapLocation, strcat(fileName, ".txt")));
+		worldlist->find(fileName);
+		game_values.worldindex = worldlist->GetCurrentIndex();
 		savecurrentworld();
 		loadcurrentworld();
 	}
@@ -5172,7 +5176,7 @@ bool dialog(const char * title, const char * instructions, char * input, int inp
 	spr_dialog.draw(224, 176, 0, 0, 192, 128);
 	menu_font_large.drawCentered(320, 200, title);
 	menu_font_small.draw(240, 235, instructions);
-	menu_font_small.drawRightJustified(640, 0, worldlist.current_name());
+	menu_font_small.drawRightJustified(640, 0, worldlist->current_name());
 	SDL_Flip(screen);
 
     while (true)
@@ -5210,7 +5214,7 @@ bool dialog(const char * title, const char * instructions, char * input, int inp
 							menu_font_large.drawCentered(320, 200, title);
 							menu_font_small.draw(240, 235, instructions);
 							menu_font_small.draw(240, 255, input);
-							menu_font_small.drawRightJustified(640, 0, worldlist.current_name());
+							menu_font_small.drawRightJustified(640, 0, worldlist->current_name());
 							SDL_Flip(screen);
 							
 							currentChar--;
@@ -5266,7 +5270,7 @@ bool dialog(const char * title, const char * instructions, char * input, int inp
 							menu_font_large.drawCentered(320, 200, title);
 							menu_font_small.draw(240, 235, instructions);
 							menu_font_small.draw(240, 255, input);
-							menu_font_small.drawRightJustified(640, 0, worldlist.current_name());
+							menu_font_small.drawRightJustified(640, 0, worldlist->current_name());
 							SDL_Flip(screen);
 						}
 					}	
@@ -5298,9 +5302,9 @@ int find()
 	{
 		strcpy(findstring, fileName);
 
-		if(worldlist.find(findstring))
+		if(worldlist->find(findstring))
 		{
-			game_values.worldindex = worldlist.GetCurrentIndex();
+			game_values.worldindex = worldlist->GetCurrentIndex();
 			loadcurrentworld();
 		}
 	}
@@ -5372,7 +5376,11 @@ int savecurrentworld()
 	return 0;
 }
 
-void SetDisplayMessage(short iTime, char * szTitle, char * szLine1, char * szLine2, char * szLine3)
+void SetDisplayMessage(short iTime,
+					   const char * szTitle,
+					   const char * szLine1,
+					   const char * szLine2,
+					   const char * szLine3)
 {
 	g_messagedisplaytimer = iTime;
 	g_szMessageTitle = szTitle;
@@ -5385,9 +5393,9 @@ int findcurrentstring()
 {
 	if(findstring[0] != '\0')
 	{
-		if(worldlist.find(findstring))
+		if(worldlist->find(findstring))
 		{
-			game_values.worldindex = worldlist.GetCurrentIndex();
+			game_values.worldindex = worldlist->GetCurrentIndex();
 			loadcurrentworld();
 		}
 	}
@@ -5433,9 +5441,9 @@ int new_world()
 		warplist.clear();
 
 		g_worldmap.New(iWidth, iHeight);
-		worldlist.add(strcat(worldLocation, strcat(fileName, ".txt")));
-		worldlist.find(fileName);
-		game_values.worldindex = worldlist.GetCurrentIndex();
+		worldlist->add(strcat(worldLocation, strcat(fileName, ".txt")));
+		worldlist->find(fileName);
+		game_values.worldindex = worldlist->GetCurrentIndex();
 		savecurrentworld();
 		loadcurrentworld();
 	}
@@ -5541,7 +5549,7 @@ void takescreenshot()
 		char szSaveFile[256];
 		strcpy(szSaveFile, "worlds/screenshots/");
 		char * pszSaveFile = szSaveFile + strlen(szSaveFile);
-		GetNameFromFileName(pszSaveFile, worldlist.current_name());
+		GetNameFromFileName(pszSaveFile, worldlist->current_name());
 		
 		if(iTileSize == PREVIEWTILESIZE)
 			strcat(szSaveFile, "_preview");
