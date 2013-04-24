@@ -39,37 +39,39 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class DirectoryListing
 {
-    public:
-        /* Constructor accepts path, optional filename extension */
-        DirectoryListing(std::string path, std::string file_ext="");
+public:
+    /* Constructor accepts path, optional filename extension */
+    DirectoryListing(std::string path, std::string file_ext="");
 
-        /* Ask the listing whether or not it successfully got access to a folder */
-        bool GetSuccess() {return Success;};
+    /* Ask the listing whether or not it successfully got access to a folder */
+    bool GetSuccess() {
+        return Success;
+    };
 
-        /* Get next filename */
-        bool operator()(std::string &s);
-		bool NextDirectory (std::string &s);
+    /* Get next filename */
+    bool operator()(std::string &s);
+    bool NextDirectory (std::string &s);
 
-		std::string fullName(const std::string &s);
+    std::string fullName(const std::string &s);
 
-        /* Destructor */
-        ~DirectoryListing();
+    /* Destructor */
+    ~DirectoryListing();
 
-    private:
-        bool Success;
-		std::string path;
-        std::string Filename_Extension;
+private:
+    bool Success;
+    std::string path;
+    std::string Filename_Extension;
 
-        #ifdef _WIN32
-        WIN32_FIND_DATA	finddata;
-        HANDLE			findhandle;
-        std::string Stored_Filename;
+#ifdef _WIN32
+    WIN32_FIND_DATA	finddata;
+    HANDLE			findhandle;
+    std::string Stored_Filename;
 
-        #else
-        DIR * dhandle;
-        struct dirent * current;
+#else
+    DIR * dhandle;
+    struct dirent * current;
 
-        #endif
+#endif
 };
 
 #endif

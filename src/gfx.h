@@ -41,79 +41,95 @@ void gfx_drawpreview(SDL_Surface * surface, short dstX, short dstY, short srcX, 
 
 class gfxSprite
 {
-	public:
-		gfxSprite();
-		~gfxSprite();
+public:
+    gfxSprite();
+    ~gfxSprite();
 
-		void clearSurface();
+    void clearSurface();
 
-		bool init(const std::string& filename, Uint8 r, Uint8 g, Uint8 b, bool fUseAccel = true); //color keyed
-		bool init(const std::string& filename, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool fUseAccel = true);	//color keyed + alpha
-		bool init(const std::string& filename);							//non color keyed
-		bool initskin(const std::string& filename, Uint8 r, Uint8 g, Uint8 b, short colorscheme, bool expand);
+    bool init(const std::string& filename, Uint8 r, Uint8 g, Uint8 b, bool fUseAccel = true); //color keyed
+    bool init(const std::string& filename, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool fUseAccel = true);	//color keyed + alpha
+    bool init(const std::string& filename);							//non color keyed
+    bool initskin(const std::string& filename, Uint8 r, Uint8 g, Uint8 b, short colorscheme, bool expand);
 
-		bool draw(short x, short y);
-		bool draw(short x, short y, short srcx, short srcy, short w, short h, short iHiddenDirection = -1, short iHiddenValue = -1);
-		bool drawStretch(short x, short y, short w, short h, short srcx, short srcy, short srcw, short srch);
+    bool draw(short x, short y);
+    bool draw(short x, short y, short srcx, short srcy, short w, short h, short iHiddenDirection = -1, short iHiddenValue = -1);
+    bool drawStretch(short x, short y, short w, short h, short srcx, short srcy, short srcw, short srch);
 
-		void setalpha(Uint8 alpha);
+    void setalpha(Uint8 alpha);
 
-		int getWidth(){return m_picture->w;}
-		int getHeight(){return m_picture->h;}
+    int getWidth() {
+        return m_picture->w;
+    }
+    int getHeight() {
+        return m_picture->h;
+    }
 
-		SDL_Surface *getSurface(){return m_picture;}
-		
-		void setSurface(SDL_Surface * surface)
-		{
-			freeSurface();
-			m_picture = surface;
-			m_bltrect.w = (Uint16)m_picture->w; 
-			m_bltrect.h = (Uint16)m_picture->h;
-		}
+    SDL_Surface *getSurface() {
+        return m_picture;
+    }
 
-		void freeSurface();
+    void setSurface(SDL_Surface * surface) {
+        freeSurface();
+        m_picture = surface;
+        m_bltrect.w = (Uint16)m_picture->w;
+        m_bltrect.h = (Uint16)m_picture->h;
+    }
 
-		bool GetWrap() {return fWrap;}
-		void SetWrap(bool wrap) {fWrap = wrap;}
-		void SetWrap(bool wrap, short wrapsize) {fWrap = wrap; iWrapSize = wrapsize;}
+    void freeSurface();
 
-	private:
-		SDL_Surface *m_picture;
-		SDL_Rect m_bltrect;
-		SDL_Rect m_srcrect;
+    bool GetWrap() {
+        return fWrap;
+    }
+    void SetWrap(bool wrap) {
+        fWrap = wrap;
+    }
+    void SetWrap(bool wrap, short wrapsize) {
+        fWrap = wrap;
+        iWrapSize = wrapsize;
+    }
 
-		bool fHiddenPlane;
-		short iHiddenDirection;
-		short iHiddenValue;
+private:
+    SDL_Surface *m_picture;
+    SDL_Rect m_bltrect;
+    SDL_Rect m_srcrect;
 
-		bool fWrap;
-		short iWrapSize;
+    bool fHiddenPlane;
+    short iHiddenDirection;
+    short iHiddenValue;
+
+    bool fWrap;
+    short iWrapSize;
 };
 
 
 class gfxFont
 {
-	public:
-		gfxFont();
-		~gfxFont();
+public:
+    gfxFont();
+    ~gfxFont();
 
-		bool init(const std::string& filename);
-		void draw(int x, int y, const std::string& s);
-		void drawf(int x, int y, const char *s, ...);
+    bool init(const std::string& filename);
+    void draw(int x, int y, const std::string& s);
+    void drawf(int x, int y, const char *s, ...);
 
-		void drawCentered(int x, int y, const char *text);
-		void drawChopCentered(int x, int y, int width, const char *text);
-		void drawRightJustified(int x, int y, const char *s, ...);
-		void drawChopRight(int x, int y, int width, const char *s);
-		void drawChopLeft(int x, int y, int width, const char *s);
+    void drawCentered(int x, int y, const char *text);
+    void drawChopCentered(int x, int y, int width, const char *text);
+    void drawRightJustified(int x, int y, const char *s, ...);
+    void drawChopRight(int x, int y, int width, const char *s);
+    void drawChopLeft(int x, int y, int width, const char *s);
 
-		void setalpha(Uint8 alpha);
+    void setalpha(Uint8 alpha);
 
-		int getHeight(){return SFont_TextHeight(m_font);};
-		int getWidth(const char *text){return SFont_TextWidth(m_font, text);};
+    int getHeight() {
+        return SFont_TextHeight(m_font);
+    };
+    int getWidth(const char *text) {
+        return SFont_TextWidth(m_font, text);
+    };
 
-	private:
-		SFont_Font *m_font;
+private:
+    SFont_Font *m_font;
 };
 
 bool gfx_loadfullskin(gfxSprite ** gSprites, const std::string& filename, Uint8 r, Uint8 g, Uint8 b, short colorScheme);

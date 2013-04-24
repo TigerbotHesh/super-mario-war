@@ -3,28 +3,27 @@
 
 #include "global.h"
 
-struct HashNode
-{
-	HashNode * next;
-	CObject * data;
+struct HashNode {
+    HashNode * next;
+    CObject * data;
 };
 
 class HashTable
 {
-	public:
-		HashTable();
-		~HashTable();
+public:
+    HashTable();
+    ~HashTable();
 
-		CObject * Add(CObject * pObject);
-		CObject * Get(int iNetworkID);
-		CObject * Remove(int iNetworkID);
+    CObject * Add(CObject * pObject);
+    CObject * Get(int iNetworkID);
+    CObject * Remove(int iNetworkID);
 
-		void Clear();
+    void Clear();
 
-	private:
-		int size;
-		int capacity;
-		HashNode * table[MAXOBJECTS * 8];
+private:
+    int size;
+    int capacity;
+    HashNode * table[MAXOBJECTS * 8];
 };
 
 #endif //__HASHTABLE_H_

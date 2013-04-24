@@ -11,134 +11,125 @@ extern TileType GetIncrementedTileType(TileType type);
 
 CTileset::CTileset(const char * szpath)
 {
-	strncpy(szName, getFileFromPath(szpath).c_str(), 256);
-	szName[255] = 0;
+    strncpy(szName, getFileFromPath(szpath).c_str(), 256);
+    szName[255] = 0;
 
-	char szFile[256];
+    char szFile[256];
 
-	strcpy(szFile, szpath);
-	strcat(szFile, "/large.png");
-	gfx_loadimage(&sSprites[0], convertPartialPath(szFile), false);
+    strcpy(szFile, szpath);
+    strcat(szFile, "/large.png");
+    gfx_loadimage(&sSprites[0], convertPartialPath(szFile), false);
 
-	sSurfaces[0] = sSprites[0].getSurface(); //optimization for repeat surface use
+    sSurfaces[0] = sSprites[0].getSurface(); //optimization for repeat surface use
 
-	iWidth = sSprites[0].getWidth() / TILESIZE;
-	iHeight = sSprites[0].getHeight() / TILESIZE;
+    iWidth = sSprites[0].getWidth() / TILESIZE;
+    iHeight = sSprites[0].getHeight() / TILESIZE;
 
-	strcpy(szFile, szpath);
-	strcat(szFile, "/medium.png");
-	gfx_loadimage(&sSprites[1], convertPartialPath(szFile), false);
+    strcpy(szFile, szpath);
+    strcat(szFile, "/medium.png");
+    gfx_loadimage(&sSprites[1], convertPartialPath(szFile), false);
 
-	sSurfaces[1] = sSprites[1].getSurface();
+    sSurfaces[1] = sSprites[1].getSurface();
 
-	strcpy(szFile, szpath);
-	strcat(szFile, "/small.png");
-	gfx_loadimage(&sSprites[2], convertPartialPath(szFile), false);
+    strcpy(szFile, szpath);
+    strcat(szFile, "/small.png");
+    gfx_loadimage(&sSprites[2], convertPartialPath(szFile), false);
 
-	sSurfaces[2] = sSprites[2].getSurface();
+    sSurfaces[2] = sSprites[2].getSurface();
 
-	strcpy(szFile, szpath);
-	strcat(szFile, "/tileset.tls");
+    strcpy(szFile, szpath);
+    strcat(szFile, "/tileset.tls");
 
-	strcpy(szTilesetPath, convertPartialPath(szFile).c_str());
-	ReadTileTypeFile(szTilesetPath);
+    strcpy(szTilesetPath, convertPartialPath(szFile).c_str());
+    ReadTileTypeFile(szTilesetPath);
 }
 
 bool CTileset::ReadTileTypeFile(char * szFile)
 {
-	//Detect if the tiletype file already exists, if not create it
-	if(File_Exists(szFile))
-	{
-		FILE * tsf = fopen(szFile, "rb");
-		if(tsf == NULL)
-		{
-			printf("ERROR: couldn't open tileset file: %s\n", szFile);
-			return false;
-		}
-		
-		iTileTypeSize = ReadInt(tsf);
+    //Detect if the tiletype file already exists, if not create it
+    if(File_Exists(szFile)) {
+        FILE * tsf = fopen(szFile, "rb");
+        if(tsf == NULL) {
+            printf("ERROR: couldn't open tileset file: %s\n", szFile);
+            return false;
+        }
 
-		if(iTileTypeSize <= 0 || iTileTypeSize > 1024)
-		{
-			fclose(tsf);
-			return false;
-		}
+        iTileTypeSize = ReadInt(tsf);
 
-		tiletypes = new TileType[iTileTypeSize];
+        if(iTileTypeSize <= 0 || iTileTypeSize > 1024) {
+            fclose(tsf);
+            return false;
+        }
 
-		for(short i = 0; i < iTileTypeSize; i++)
-		{
-			tiletypes[i] = (TileType)ReadInt(tsf);
-		}
+        tiletypes = new TileType[iTileTypeSize];
 
-		fclose(tsf);
-	}
-	else
-	{
-		iTileTypeSize = iWidth * iHeight;
-		tiletypes = new TileType[iTileTypeSize];
+        for(short i = 0; i < iTileTypeSize; i++) {
+            tiletypes[i] = (TileType)ReadInt(tsf);
+        }
 
-		for(short i = 0; i < iTileTypeSize; i++)
-		{
-			tiletypes[i] = tile_nonsolid;
-		}
-	}
+        fclose(tsf);
+    } else {
+        iTileTypeSize = iWidth * iHeight;
+        tiletypes = new TileType[iTileTypeSize];
 
-	return true;
+        for(short i = 0; i < iTileTypeSize; i++) {
+            tiletypes[i] = tile_nonsolid;
+        }
+    }
+
+    return true;
 }
 
 
 CTileset::~CTileset()
 {
-	if(tiletypes)
-		delete [] tiletypes;
+    if(tiletypes)
+        delete [] tiletypes;
 
-	tiletypes = NULL;
+    tiletypes = NULL;
 }
 
 TileType CTileset::GetTileType(short iTileCol, short iTileRow)
 {
-	return tiletypes[iTileCol + iTileRow * iWidth];
+    return tiletypes[iTileCol + iTileRow * iWidth];
 }
 
 void CTileset::SetTileType(short iTileCol, short iTileRow, TileType type)
 {
-	tiletypes[iTileCol + iTileRow * iWidth] = type;
+    tiletypes[iTileCol + iTileRow * iWidth] = type;
 }
 
 TileType CTileset::IncrementTileType(short iTileCol, short iTileRow)
 {
-	short iTile = iTileCol + iTileRow * iWidth;
-	tiletypes[iTile] = GetIncrementedTileType(tiletypes[iTile]);
+    short iTile = iTileCol + iTileRow * iWidth;
+    tiletypes[iTile] = GetIncrementedTileType(tiletypes[iTile]);
 
-	return tiletypes[iTile];
+    return tiletypes[iTile];
 }
 
 void CTileset::Draw(SDL_Surface * dstSurface, short iTileSize, SDL_Rect * srcRect, SDL_Rect * dstRect)
 {
-	SDL_BlitSurface(sSurfaces[iTileSize], srcRect, dstSurface, dstRect);
+    SDL_BlitSurface(sSurfaces[iTileSize], srcRect, dstSurface, dstRect);
 }
 
 void CTileset::SaveTileset()
 {
-	FILE * tsf = fopen(szTilesetPath, "wb");
-	if(tsf == NULL)
-	{
-		printf("ERROR: couldn't open tileset file to save tile types: %s\n", szTilesetPath);
-		return;
-	}
-	
-	WriteInt(iTileTypeSize, tsf);
+    FILE * tsf = fopen(szTilesetPath, "wb");
+    if(tsf == NULL) {
+        printf("ERROR: couldn't open tileset file to save tile types: %s\n", szTilesetPath);
+        return;
+    }
 
-	for(short i = 0; i < iTileTypeSize; i++)
-	{
-		WriteInt(tiletypes[i], tsf);
-	}
+    WriteInt(iTileTypeSize, tsf);
 
-	fclose(tsf);
-	
+    for(short i = 0; i < iTileTypeSize; i++) {
+        WriteInt(tiletypes[i], tsf);
+    }
+
+    fclose(tsf);
+
 #if defined(__MACOSX__)
-	chmod(szTilesetPath, S_IRWXU | S_IRWXG | S_IROTH);
+    chmod(szTilesetPath, S_IRWXU | S_IRWXG | S_IROTH);
 #endif
 }
 
@@ -147,29 +138,27 @@ void CTileset::SaveTileset()
 *********************************/
 
 CTilesetManager::CTilesetManager() :
-	SimpleDirectoryList(convertPath("gfx/packs/Classic/tilesets/"))
+    SimpleDirectoryList(convertPath("gfx/packs/Classic/tilesets/"))
 {
-	short y1 = 0, y2 = 0, y3 = 0;
-	for(short i = 0; i < 32; i++)
-	{
-		short x1 = 0, x2 = 0, x3 = 0;
-		for(short j = 0; j < 32; j++)
-		{
-			gfx_setrect(&rRects[0][j][i], x1, y1, TILESIZE, TILESIZE);
-			gfx_setrect(&rRects[1][j][i], x2, y2, PREVIEWTILESIZE, PREVIEWTILESIZE);
-			gfx_setrect(&rRects[2][j][i], x3, y3, THUMBTILESIZE, THUMBTILESIZE);
-			
-			x1 += TILESIZE;
-			x2 += PREVIEWTILESIZE;
-			x3 += THUMBTILESIZE;
-		}
+    short y1 = 0, y2 = 0, y3 = 0;
+    for(short i = 0; i < 32; i++) {
+        short x1 = 0, x2 = 0, x3 = 0;
+        for(short j = 0; j < 32; j++) {
+            gfx_setrect(&rRects[0][j][i], x1, y1, TILESIZE, TILESIZE);
+            gfx_setrect(&rRects[1][j][i], x2, y2, PREVIEWTILESIZE, PREVIEWTILESIZE);
+            gfx_setrect(&rRects[2][j][i], x3, y3, THUMBTILESIZE, THUMBTILESIZE);
 
-		y1 += TILESIZE;
-		y2 += PREVIEWTILESIZE;
-		y3 += THUMBTILESIZE;
-	}
+            x1 += TILESIZE;
+            x2 += PREVIEWTILESIZE;
+            x3 += THUMBTILESIZE;
+        }
 
-	tClassicTileset = NULL;
+        y1 += TILESIZE;
+        y2 += PREVIEWTILESIZE;
+        y3 += THUMBTILESIZE;
+    }
+
+    tClassicTileset = NULL;
 }
 
 CTilesetManager::~CTilesetManager()
@@ -177,107 +166,96 @@ CTilesetManager::~CTilesetManager()
 
 void CTilesetManager::Init(const char * szGfxPack)
 {
-	//Remove all existing tilesets
-	std::vector<CTileset*>::iterator iter = tilesetlist.begin(), lim = tilesetlist.end();
-	while (iter != lim)
-	{
-		delete (*iter);
-		
-		iter = tilesetlist.erase(iter);
-		lim = tilesetlist.end();
-	}
+    //Remove all existing tilesets
+    std::vector<CTileset*>::iterator iter = tilesetlist.begin(), lim = tilesetlist.end();
+    while (iter != lim) {
+        delete (*iter);
 
-	//Add in tilesets from the new gfxpack (if the gfxpack isn't "Classic")
-	if(strcmp(getFileFromPath(szGfxPack).c_str(), "Classic"))
-	{
-		std::string s = convertPath("gfx/packs/tilesets", szGfxPack) + getDirectorySeperator();
-		SimpleDirectoryList dirlist(s);
+        iter = tilesetlist.erase(iter);
+        lim = tilesetlist.end();
+    }
 
-		short iLength = dirlist.GetCount();
-		for(short i = 0; i < iLength; i++)
-		{
-			CTileset * tileset = new CTileset(dirlist.current_name());
-			tilesetlist.push_back(tileset);
+    //Add in tilesets from the new gfxpack (if the gfxpack isn't "Classic")
+    if(strcmp(getFileFromPath(szGfxPack).c_str(), "Classic")) {
+        std::string s = convertPath("gfx/packs/tilesets", szGfxPack) + getDirectorySeperator();
+        SimpleDirectoryList dirlist(s);
 
-			//If the tileset is "classic" then keep it's index for common operations
-			if(!strcmp(tileset->GetName(), "Classic"))
-			{
-				tClassicTileset = tileset;
-				iClassicTilesetIndex = i;
-			}
+        short iLength = dirlist.GetCount();
+        for(short i = 0; i < iLength; i++) {
+            CTileset * tileset = new CTileset(dirlist.current_name());
+            tilesetlist.push_back(tileset);
 
-			dirlist.next();
-		}
-	}
+            //If the tileset is "classic" then keep it's index for common operations
+            if(!strcmp(tileset->GetName(), "Classic")) {
+                tClassicTileset = tileset;
+                iClassicTilesetIndex = i;
+            }
 
-	//Add in tilesets from the classic tileset to fill the gaps
-	short iLength = filelist.size();
-	char szTilesetName[128];
-	for(short i = 0; i < iLength; i++)
-	{
-		strncpy(szTilesetName, getFileFromPath(filelist[i]).c_str(), 128);
-		szTilesetName[127] = 0;
+            dirlist.next();
+        }
+    }
 
-		//See if the new tileset already exists and if it does, skip it
-		short iTilesetSize = tilesetlist.size();
-		bool fFound = false;
-		for(short iTileset = 0; iTileset < iTilesetSize; iTileset++)
-		{
-			if(!strcmp(tilesetlist[iTileset]->GetName(), szTilesetName))
-			{
-				fFound = true;
-				break;
-			}
-		}
+    //Add in tilesets from the classic tileset to fill the gaps
+    short iLength = filelist.size();
+    char szTilesetName[128];
+    for(short i = 0; i < iLength; i++) {
+        strncpy(szTilesetName, getFileFromPath(filelist[i]).c_str(), 128);
+        szTilesetName[127] = 0;
 
-		//Add the tileset if another one by the same name isn't already in the tileset
-		if(!fFound)
-		{
-			CTileset * tileset = new CTileset(filelist[i].c_str());
-			tilesetlist.push_back(tileset);
+        //See if the new tileset already exists and if it does, skip it
+        short iTilesetSize = tilesetlist.size();
+        bool fFound = false;
+        for(short iTileset = 0; iTileset < iTilesetSize; iTileset++) {
+            if(!strcmp(tilesetlist[iTileset]->GetName(), szTilesetName)) {
+                fFound = true;
+                break;
+            }
+        }
 
-			if(!strcmp(tileset->GetName(), "Classic"))
-			{
-				tClassicTileset = tileset;
-				iClassicTilesetIndex = i;
-			}
-		}
-	}
+        //Add the tileset if another one by the same name isn't already in the tileset
+        if(!fFound) {
+            CTileset * tileset = new CTileset(filelist[i].c_str());
+            tilesetlist.push_back(tileset);
+
+            if(!strcmp(tileset->GetName(), "Classic")) {
+                tClassicTileset = tileset;
+                iClassicTilesetIndex = i;
+            }
+        }
+    }
 }
 
 short CTilesetManager::GetIndexFromName(const char * szName)
 {
-	short iLength = tilesetlist.size();
+    short iLength = tilesetlist.size();
 
-	for(short i = 0; i < iLength; i++)
-	{
-		if(!strcmp(tilesetlist[i]->GetName(), szName))
-			return i;
-	}
+    for(short i = 0; i < iLength; i++) {
+        if(!strcmp(tilesetlist[i]->GetName(), szName))
+            return i;
+    }
 
-	return TILESETUNKNOWN;
+    return TILESETUNKNOWN;
 }
 
 void CTilesetManager::Draw(SDL_Surface * dstSurface, short iTilesetID, short iTileSize, short iSrcTileCol, short iSrcTileRow, short iDstTileCol, short iDstTileRow)
 {
-	tilesetlist[iTilesetID]->Draw(dstSurface, iTileSize, &rRects[iTileSize][iSrcTileCol][iSrcTileRow], &rRects[iTileSize][iDstTileCol][iDstTileRow]);
+    tilesetlist[iTilesetID]->Draw(dstSurface, iTileSize, &rRects[iTileSize][iSrcTileCol][iSrcTileRow], &rRects[iTileSize][iDstTileCol][iDstTileRow]);
 }
 
 CTileset * CTilesetManager::GetTileset(short iTilesetID)
 {
-	if(iTilesetID < 0 || iTilesetID >= (short)tilesetlist.size())
-		return NULL;
+    if(iTilesetID < 0 || iTilesetID >= (short)tilesetlist.size())
+        return NULL;
 
-	return tilesetlist[iTilesetID];
+    return tilesetlist[iTilesetID];
 }
 
 void CTilesetManager::SaveTilesets()
 {
-	short iLength = tilesetlist.size();
+    short iLength = tilesetlist.size();
 
-	for(short i = 0; i < iLength; i++)
-	{
-		tilesetlist[i]->SaveTileset();
-	}
+    for(short i = 0; i < iLength; i++) {
+        tilesetlist[i]->SaveTileset();
+    }
 }
 
