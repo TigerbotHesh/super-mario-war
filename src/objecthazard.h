@@ -3,162 +3,164 @@
 
 class OMO_OrbitHazard : public IO_OverMapObject
 {
-	public:
-		OMO_OrbitHazard(gfxSprite *nspr, short x, short y, float radius, float vel, float angle, short iNumSpr, short aniSpeed, short iCollisionWidth, short iCollisionHeight, short iCollisionOffsetX, short iCollisionOffsetY, short iAnimationOffsetX, short iAnimationOffsetY, short iAnimationHeight, short iAnimationWidth);
-		~OMO_OrbitHazard() {}
+public:
+    OMO_OrbitHazard(gfxSprite *nspr, short x, short y, float radius, float vel, float angle, short iNumSpr, short aniSpeed, short iCollisionWidth, short iCollisionHeight, short iCollisionOffsetX, short iCollisionOffsetY, short iAnimationOffsetX, short iAnimationOffsetY, short iAnimationHeight, short iAnimationWidth);
+    ~OMO_OrbitHazard() {}
 
-		void update();
+    void update();
 
-		bool collide(CPlayer *);
+    bool collide(CPlayer *);
 
-	private:
-		void CalculatePosition();
+private:
+    void CalculatePosition();
 
-		float dAngle, dVel, dRadius;
-		float dCenterX, dCenterY;
+    float dAngle, dVel, dRadius;
+    float dCenterX, dCenterY;
 };
 
 class OMO_StraightPathHazard : public IO_OverMapObject
 {
-	public:
-		OMO_StraightPathHazard(gfxSprite *nspr, short x, short y, float angle, float vel, short iNumSpr, short aniSpeed, short iCollisionWidth, short iCollisionHeight, short iCollisionOffsetX, short iCollisionOffsetY, short iAnimationOffsetX, short iAnimationOffsetY, short iAnimationHeight, short iAnimationWidth);
-		~OMO_StraightPathHazard() {}
+public:
+    OMO_StraightPathHazard(gfxSprite *nspr, short x, short y, float angle, float vel, short iNumSpr, short aniSpeed, short iCollisionWidth, short iCollisionHeight, short iCollisionOffsetX, short iCollisionOffsetY, short iAnimationOffsetX, short iAnimationOffsetY, short iAnimationHeight, short iAnimationWidth);
+    ~OMO_StraightPathHazard() {}
 
-		void update();
+    void update();
 
-		bool collide(CPlayer *);
+    bool collide(CPlayer *);
 
-	private:
+private:
 
-		float dAngle, dVel;
+    float dAngle, dVel;
 };
 
 class MO_BulletBill : public IO_MovingObject
 {
-	public:
-		MO_BulletBill(gfxSprite *nspr, gfxSprite *nsprdead, short x, short y, float nspeed, short playerID, bool isspawned);
-		~MO_BulletBill(){};
+public:
+    MO_BulletBill(gfxSprite *nspr, gfxSprite *nsprdead, short x, short y, float nspeed, short playerID, bool isspawned);
+    ~MO_BulletBill() {};
 
-		void update();
-		void draw();
-		void draw(short iOffsetX, short iOffsetY);
-		bool collide(CPlayer * player);
-		void collide(IO_MovingObject * object);
+    void update();
+    void draw();
+    void draw(short iOffsetX, short iOffsetY);
+    bool collide(CPlayer * player);
+    void collide(IO_MovingObject * object);
 
-		bool hittop(CPlayer * player);
-		bool hitother(CPlayer * player);
-		
-		void Die();
-		void SetDirectionOffset();
+    bool hittop(CPlayer * player);
+    bool hitother(CPlayer * player);
 
-	private:
-		gfxSprite * spr_dead;
+    void Die();
+    void SetDirectionOffset();
 
-		short iColorID;
-		
-		short iColorOffsetY;
-		short iDirectionOffsetY;
+private:
+    gfxSprite * spr_dead;
 
-		bool fIsSpawned;
-		short iHiddenDirection;
-		short iHiddenPlane;
+    short iColorID;
 
-	friend class MO_Podobo;
+    short iColorOffsetY;
+    short iDirectionOffsetY;
+
+    bool fIsSpawned;
+    short iHiddenDirection;
+    short iHiddenPlane;
+
+    friend class MO_Podobo;
 };
 
 class IO_BulletBillCannon : public CObject
 {
-	public:
-		IO_BulletBillCannon(short x, short y, short freq, float vel, bool preview);
-		~IO_BulletBillCannon() {}
+public:
+    IO_BulletBillCannon(short x, short y, short freq, float vel, bool preview);
+    ~IO_BulletBillCannon() {}
 
-		void draw() {}
-		void update();
+    void draw() {}
+    void update();
 
-		bool collide(CPlayer *) {return false;}
-		void collide(IO_MovingObject *) {}
-		
-	private:
-		void SetNewTimer();
+    bool collide(CPlayer *) {
+        return false;
+    }
+    void collide(IO_MovingObject *) {}
 
-		short iFreq, iTimer;
-		float dVel;
-		bool fPreview;
+private:
+    void SetNewTimer();
+
+    short iFreq, iTimer;
+    float dVel;
+    bool fPreview;
 };
 
 
 class MO_Explosion : public IO_MovingObject
 {
-	public:
-		MO_Explosion(gfxSprite *nspr, short x, short y, short iNumSpr, short aniSpeed, short id, short iTeamID, killstyle style);
-		~MO_Explosion(){};
+public:
+    MO_Explosion(gfxSprite *nspr, short x, short y, short iNumSpr, short aniSpeed, short id, short iTeamID, killstyle style);
+    ~MO_Explosion() {};
 
-		void update();
-		bool collide(CPlayer * player);
-		
-	private:
-		
-		short timer;
-		killstyle iStyle;
+    void update();
+    bool collide(CPlayer * player);
+
+private:
+
+    short timer;
+    killstyle iStyle;
 };
 
 
 class IO_FlameCannon : public CObject
 {
-	public:
-		IO_FlameCannon(short x, short y, short freq, short direction);
-		~IO_FlameCannon() {}
+public:
+    IO_FlameCannon(short x, short y, short freq, short direction);
+    ~IO_FlameCannon() {}
 
-		void draw();
-		void draw(short iOffsetX, short iOffsetY);
-		void update();
+    void draw();
+    void draw(short iOffsetX, short iOffsetY);
+    void update();
 
-		bool collide(CPlayer * player);
-		void collide(IO_MovingObject *) {}
-				
-	private:
-		void SetNewTimer();
+    bool collide(CPlayer * player);
+    void collide(IO_MovingObject *) {}
 
-		short iFreq, iTimer, iCycle;
-		short iFrame;
+private:
+    void SetNewTimer();
 
-		short iDirection;
+    short iFreq, iTimer, iCycle;
+    short iFrame;
 
-	friend class CPlayerAI;
+    short iDirection;
+
+    friend class CPlayerAI;
 };
 
 
 class MO_PirhanaPlant : public IO_MovingObject
 {
-	public:
-		MO_PirhanaPlant(short x, short y, short type, short freq, short direction, bool preview);
-		~MO_PirhanaPlant() {}
+public:
+    MO_PirhanaPlant(short x, short y, short type, short freq, short direction, bool preview);
+    ~MO_PirhanaPlant() {}
 
-		void draw();
-		void draw(short iOffsetX, short iOffsetY);
-		void update();
+    void draw();
+    void draw(short iOffsetX, short iOffsetY);
+    void update();
 
-		bool collide(CPlayer * player);
-		void collide(IO_MovingObject *);
-		
-		void KillPlant();
+    bool collide(CPlayer * player);
+    void collide(IO_MovingObject *);
 
-	private:
-		void SetNewTimer();
-		
-		float GetFireballAngle();
+    void KillPlant();
 
-		short iType, iDirection;
-		short iFreq, iTimer;
-		//short iHiddenPlane, iHiddenDirection;
-		//short iSrcX, iSrcY;
-		short iAnimationTimer;
-		short iFrame;
-		short iActionTimer;
+private:
+    void SetNewTimer();
 
-		bool fPreview;
+    float GetFireballAngle();
 
-	friend class CPlayerAI;
+    short iType, iDirection;
+    short iFreq, iTimer;
+    //short iHiddenPlane, iHiddenDirection;
+    //short iSrcX, iSrcY;
+    short iAnimationTimer;
+    short iFrame;
+    short iActionTimer;
+
+    bool fPreview;
+
+    friend class CPlayerAI;
 };
 
 #endif //_OBJECTHAZARD_H

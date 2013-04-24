@@ -12,679 +12,695 @@ class MapListNode;
 
 class MI_InputControlField : public UI_Control
 {
-	public:
-		MI_InputControlField(gfxSprite * nspr, short x, short y, const char * name, short width, short indent);
-        virtual ~MI_InputControlField() {};
-		
-		void Draw();
-		MenuCodeEnum SendInput(CPlayerInput * playerInput);
-		void SetKey(short * iSetKey, short key, short device);
+public:
+    MI_InputControlField(gfxSprite * nspr, short x, short y, const char * name, short width, short indent);
+    virtual ~MI_InputControlField() {};
 
-		MenuCodeEnum Modify(bool modify);
+    void Draw();
+    MenuCodeEnum SendInput(CPlayerInput * playerInput);
+    void SetKey(short * iSetKey, short key, short device);
 
-		void SetDevice(short device) {iDevice = device;}
-		void SetKey(short * key) {iKey = key;}
-		void SetType(short type) {iType = type;}
-		void SetKeyIndex(short keyindex) {iKeyIndex = keyindex;}
-		void SetPlayerIndex(short playerindex) {iPlayerIndex = playerindex;}
+    MenuCodeEnum Modify(bool modify);
 
-	private:
+    void SetDevice(short device) {
+        iDevice = device;
+    }
+    void SetKey(short * key) {
+        iKey = key;
+    }
+    void SetType(short type) {
+        iType = type;
+    }
+    void SetKeyIndex(short keyindex) {
+        iKeyIndex = keyindex;
+    }
+    void SetPlayerIndex(short playerindex) {
+        iPlayerIndex = playerindex;
+    }
 
-		gfxSprite * spr;
-		char * szName;
+private:
 
-		short iWidth, iIndent;
+    gfxSprite * spr;
+    char * szName;
 
-		short iDevice;
-		short * iKey;
-		short iType;
-		short iKeyIndex;
-		short iPlayerIndex;
+    short iWidth, iIndent;
+
+    short iDevice;
+    short * iKey;
+    short iType;
+    short iKeyIndex;
+    short iPlayerIndex;
 };
 
 class MI_StoredPowerupResetButton : public MI_Button
 {
-	public:
+public:
 
-		MI_StoredPowerupResetButton(gfxSprite * nspr, short x, short y, const char * name, short width, short justified);
-		~MI_StoredPowerupResetButton() {}
+    MI_StoredPowerupResetButton(gfxSprite * nspr, short x, short y, const char * name, short width, short justified);
+    ~MI_StoredPowerupResetButton() {}
 
-		void Draw();
+    void Draw();
 };
 
 class MI_InputControlContainer : public UI_Control
 {
-	public:
+public:
 
-		MI_InputControlContainer(gfxSprite * spr_button, short x, short y, short playerID);
-		virtual ~MI_InputControlContainer();
+    MI_InputControlContainer(gfxSprite * spr_button, short x, short y, short playerID);
+    virtual ~MI_InputControlContainer();
 
-		void Update();
-		void Draw();
+    void Update();
+    void Draw();
 
-		MenuCodeEnum SendInput(CPlayerInput * playerInput);
-		MenuCodeEnum Modify(bool modify);
+    MenuCodeEnum SendInput(CPlayerInput * playerInput);
+    MenuCodeEnum Modify(bool modify);
 
-		void SetPlayer(short iPlayerID);
+    void SetPlayer(short iPlayerID);
 
-		void UpdateDeviceKeys(short iDevice);
+    void UpdateDeviceKeys(short iDevice);
 
-	private:
+private:
 
-		void SetVisibleInputFields();
+    void SetVisibleInputFields();
 
-		short iPlayerID;
-		short iDevice;
-		short iSelectedInputType;
-		
-		UI_Menu * mInputMenu;
+    short iPlayerID;
+    short iDevice;
+    short iSelectedInputType;
 
-		MI_Image * miImage[2];
-		MI_Text * miText;
-		MI_SelectField * miDeviceSelectField;
-		MI_Button * miInputTypeButton;
-		MI_InputControlField * miGameInputControlFields[NUM_KEYS];
-		MI_InputControlField * miMenuInputControlFields[NUM_KEYS];
+    UI_Menu * mInputMenu;
 
-		MI_Button * miBackButton;
+    MI_Image * miImage[2];
+    MI_Text * miText;
+    MI_SelectField * miDeviceSelectField;
+    MI_Button * miInputTypeButton;
+    MI_InputControlField * miGameInputControlFields[NUM_KEYS];
+    MI_InputControlField * miMenuInputControlFields[NUM_KEYS];
+
+    MI_Button * miBackButton;
 };
 
 class MI_TeamSelect : public UI_Control
 {
-	public:
+public:
 
-		MI_TeamSelect(gfxSprite * spr_background, short x, short y);
-		virtual ~MI_TeamSelect();
+    MI_TeamSelect(gfxSprite * spr_background, short x, short y);
+    virtual ~MI_TeamSelect();
 
-		void Update();
-		void Draw();
+    void Update();
+    void Draw();
 
-		MenuCodeEnum SendInput(CPlayerInput * playerInput);
-		MenuCodeEnum Modify(bool modify);
+    MenuCodeEnum SendInput(CPlayerInput * playerInput);
+    MenuCodeEnum Modify(bool modify);
 
-		void Reset();
-		short OrganizeTeams();
-		short GetTeam(short iPlayerID);
+    void Reset();
+    short OrganizeTeams();
+    short GetTeam(short iPlayerID);
 
-	private:
+private:
 
-		void FindNewTeam(short iPlayerID, short iDirection);
+    void FindNewTeam(short iPlayerID, short iDirection);
 
-		MI_Image * miImage;
-		gfxSprite * spr;
+    MI_Image * miImage;
+    gfxSprite * spr;
 
-		short iTeamIDs[4][3];
-		short iTeamCounts[4];
-		short iNumTeams;
-		
-		short iAnimationTimer;
-		short iAnimationFrame;
-		short iRandomAnimationFrame;
+    short iTeamIDs[4][3];
+    short iTeamCounts[4];
+    short iNumTeams;
 
-		bool fReady[4];
-		bool fAllReady;
+    short iAnimationTimer;
+    short iAnimationFrame;
+    short iRandomAnimationFrame;
 
-		short iFastScroll[4];
-		short iFastScrollTimer[4];
+    bool fReady[4];
+    bool fAllReady;
 
-	friend class Menu;
+    short iFastScroll[4];
+    short iFastScrollTimer[4];
+
+    friend class Menu;
 };
 
 class MI_PlayerSelect : public UI_Control
 {
-	public:
+public:
 
-		MI_PlayerSelect(gfxSprite * nspr, short x, short y, const char * name, short width, short indent);
-		virtual ~MI_PlayerSelect();
+    MI_PlayerSelect(gfxSprite * nspr, short x, short y, const char * name, short width, short indent);
+    virtual ~MI_PlayerSelect();
 
-		void SetImagePosition();
+    void SetImagePosition();
 
-		void Update();
-		void Draw();
+    void Update();
+    void Draw();
 
-		MenuCodeEnum SendInput(CPlayerInput * playerInput);
-		MenuCodeEnum Modify(bool modify);
+    MenuCodeEnum SendInput(CPlayerInput * playerInput);
+    MenuCodeEnum Modify(bool modify);
 
-	private:
+private:
 
-		gfxSprite * spr;
+    gfxSprite * spr;
 
-		char * szName;
-		short iWidth, iIndent;
+    char * szName;
+    short iWidth, iIndent;
 
-		short iSelectedPlayer;
-		short iPlayerPosition[4];
+    short iSelectedPlayer;
+    short iPlayerPosition[4];
 
-		MI_Image * miModifyImage;
+    MI_Image * miModifyImage;
 };
 
 class MI_PowerupSelection : public UI_Control
 {
-	public:
+public:
 
-		MI_PowerupSelection(short x, short y, short width, short numlines);
-		virtual ~MI_PowerupSelection();
+    MI_PowerupSelection(short x, short y, short width, short numlines);
+    virtual ~MI_PowerupSelection();
 
-		MenuCodeEnum Modify(bool modify);
-		MenuCodeEnum SendInput(CPlayerInput * playerInput);
+    MenuCodeEnum Modify(bool modify);
+    MenuCodeEnum SendInput(CPlayerInput * playerInput);
 
-		void Update();
-		void Draw();
+    void Update();
+    void Draw();
 
-		void MoveNext();
-		void MovePrev();
+    void MoveNext();
+    void MovePrev();
 
-	private:
-		
-		void AdjustDisplayArrows();
+private:
 
-		void SetupPowerupFields();
-		void EnablePowerupFields(bool fEnable);
+    void AdjustDisplayArrows();
 
-		short iIndex, iOffset;
-		short iTopStop, iBottomStop;
-		short iNumLines;
-		short iWidth;
+    void SetupPowerupFields();
+    void EnablePowerupFields(bool fEnable);
 
-		UI_Menu * mMenu;
+    short iIndex, iOffset;
+    short iTopStop, iBottomStop;
+    short iNumLines;
+    short iWidth;
 
-		MI_SelectField * miOverride;
-		MI_SelectField * miPreset;
+    UI_Menu * mMenu;
 
-		MI_PowerupSlider * miPowerupSlider[NUM_POWERUPS];
+    MI_SelectField * miOverride;
+    MI_SelectField * miPreset;
 
-		MI_Button * miRestoreDefaultsButton;
-		MI_Button * miClearButton;
+    MI_PowerupSlider * miPowerupSlider[NUM_POWERUPS];
 
-		MI_Image * miDialogImage;
-		MI_Text * miDialogAreYouText;
-		MI_Text * miDialogSureText;
-		MI_Button * miDialogYesButton;
-		MI_Button * miDialogNoButton;
+    MI_Button * miRestoreDefaultsButton;
+    MI_Button * miClearButton;
 
-		MI_Image * miUpArrow;
-		MI_Image * miDownArrow;
+    MI_Image * miDialogImage;
+    MI_Text * miDialogAreYouText;
+    MI_Text * miDialogSureText;
+    MI_Button * miDialogYesButton;
+    MI_Button * miDialogNoButton;
+
+    MI_Image * miUpArrow;
+    MI_Image * miDownArrow;
 };
 
 
 class MI_WorldPreviewDisplay : public UI_Control
 {
-	public:
+public:
 
-		MI_WorldPreviewDisplay(short x, short y, short cols, short rows);
-		virtual ~MI_WorldPreviewDisplay();
+    MI_WorldPreviewDisplay(short x, short y, short cols, short rows);
+    virtual ~MI_WorldPreviewDisplay();
 
-		//Updates animations or other events every frame
-		void Update();
+    //Updates animations or other events every frame
+    void Update();
 
-		//Draws every frame
-		void Draw();
+    //Draws every frame
+    void Draw();
 
-		void SetWorld();
+    void SetWorld();
 
-	protected:
-		
-		void Init();
-		void UpdateMapSurface(bool fFullRefresh);
+protected:
 
-		SDL_Surface * sMapSurface;
-		SDL_Rect rectDst;
+    void Init();
+    void UpdateMapSurface(bool fFullRefresh);
 
-		short iCols, iRows;
+    SDL_Surface * sMapSurface;
+    SDL_Rect rectDst;
 
-		short iMapOffsetX, iMapOffsetY;
-		short iMapGlobalOffsetX, iMapGlobalOffsetY;
-		short iMapDrawOffsetCol, iMapDrawOffsetRow;
+    short iCols, iRows;
 
-		short iMoveDirection;
+    short iMapOffsetX, iMapOffsetY;
+    short iMapGlobalOffsetX, iMapGlobalOffsetY;
+    short iMapDrawOffsetCol, iMapDrawOffsetRow;
 
-		short iAnimationTimer;
-		short iAnimationFrame;
+    short iMoveDirection;
 
-		short iScrollCols, iScrollRows;
+    short iAnimationTimer;
+    short iAnimationFrame;
 
-		SDL_Rect rectSrcSurface, rectDstSurface;
+    short iScrollCols, iScrollRows;
 
-		short iScrollSpeed, iScrollSpeedTimer;
+    SDL_Rect rectSrcSurface, rectDstSurface;
+
+    short iScrollSpeed, iScrollSpeedTimer;
 };
 
 class MI_AnnouncerField : public UI_Control
 {
-	public:
+public:
 
-		MI_AnnouncerField(gfxSprite * nspr, short x, short y, const char * name, short width, short indent, SimpleFileList * pList);
-		virtual ~MI_AnnouncerField();
+    MI_AnnouncerField(gfxSprite * nspr, short x, short y, const char * name, short width, short indent, SimpleFileList * pList);
+    virtual ~MI_AnnouncerField();
 
-		//Called when user selects this control to change it's value
-		MenuCodeEnum Modify(bool modify);
+    //Called when user selects this control to change it's value
+    MenuCodeEnum Modify(bool modify);
 
-		//Updates animations or other events every frame
-		void Update();
+    //Updates animations or other events every frame
+    void Update();
 
-		//Draws every frame
-		void Draw();
+    //Draws every frame
+    void Draw();
 
-		//Sends player input to control on every frame
-		virtual MenuCodeEnum SendInput(CPlayerInput * playerInput);
+    //Sends player input to control on every frame
+    virtual MenuCodeEnum SendInput(CPlayerInput * playerInput);
 
-	protected:
+protected:
 
-		void UpdateName();
+    void UpdateName();
 
-		gfxSprite * spr;
-		
-		char * szName;
-		short iWidth, iIndent;
-		
-		char szFieldName[256];
+    gfxSprite * spr;
 
-		MI_Image * miModifyImageLeft;
-		MI_Image * miModifyImageRight;
+    char * szName;
+    short iWidth, iIndent;
 
-		SimpleFileList * list;
+    char szFieldName[256];
+
+    MI_Image * miModifyImageLeft;
+    MI_Image * miModifyImageRight;
+
+    SimpleFileList * list;
 };
 
 class MI_PacksField : public MI_AnnouncerField
 {
-	public:
+public:
 
-		MI_PacksField(gfxSprite * nspr, short x, short y, const char * name, short width, short indent, SimpleFileList * pList, MenuCodeEnum code);
-		virtual ~MI_PacksField();
+    MI_PacksField(gfxSprite * nspr, short x, short y, const char * name, short width, short indent, SimpleFileList * pList, MenuCodeEnum code);
+    virtual ~MI_PacksField();
 
-		MenuCodeEnum SendInput(CPlayerInput * playerInput);
+    MenuCodeEnum SendInput(CPlayerInput * playerInput);
 
-	private:
-		MenuCodeEnum itemChangedCode;
+private:
+    MenuCodeEnum itemChangedCode;
 };
 
 class MI_PlaylistField : public UI_Control
 {
-	public:
+public:
 
-		MI_PlaylistField(gfxSprite * nspr, short x, short y, const char * name, short width, short indent);
-		virtual ~MI_PlaylistField();
+    MI_PlaylistField(gfxSprite * nspr, short x, short y, const char * name, short width, short indent);
+    virtual ~MI_PlaylistField();
 
-		//Called when user selects this control to change it's value
-		MenuCodeEnum Modify(bool modify);
+    //Called when user selects this control to change it's value
+    MenuCodeEnum Modify(bool modify);
 
-		//Updates animations or other events every frame
-		void Update();
+    //Updates animations or other events every frame
+    void Update();
 
-		//Draws every frame
-		virtual void Draw();
+    //Draws every frame
+    virtual void Draw();
 
-		//Sends player input to control on every frame
-		MenuCodeEnum SendInput(CPlayerInput * playerInput);
+    //Sends player input to control on every frame
+    MenuCodeEnum SendInput(CPlayerInput * playerInput);
 
-	protected:
+protected:
 
-		gfxSprite * spr;
-		
-		char * szName;
-		short iWidth, iIndent;
-		
-		MI_Image * miModifyImageLeft;
-		MI_Image * miModifyImageRight;
+    gfxSprite * spr;
+
+    char * szName;
+    short iWidth, iIndent;
+
+    MI_Image * miModifyImageLeft;
+    MI_Image * miModifyImageRight;
 };
 
 class MI_TourStop : public UI_Control
 {
-	public:
+public:
 
-		MI_TourStop(short x, short y, bool fWorld);
-		virtual ~MI_TourStop();
+    MI_TourStop(short x, short y, bool fWorld);
+    virtual ~MI_TourStop();
 
-		MenuCodeEnum Modify(bool fModify);
+    MenuCodeEnum Modify(bool fModify);
 
-		void Update();
-		void Draw();
-		void Refresh(short iTourStop);
+    void Update();
+    void Draw();
+    void Refresh(short iTourStop);
 
-	private:
+private:
 
-		MI_ImageSelectField * miModeField;
-		MI_SelectField * miGoalField;
-		MI_SelectField * miPointsField;
-		MI_MapField * miMapField;
-		MI_Button * miStartButton;
+    MI_ImageSelectField * miModeField;
+    MI_SelectField * miGoalField;
+    MI_SelectField * miPointsField;
+    MI_MapField * miMapField;
+    MI_Button * miStartButton;
 
-		MI_SelectField * miBonusField;
-		MI_Image * miEndStageImage[2];
+    MI_SelectField * miBonusField;
+    MI_Image * miEndStageImage[2];
 
-		MI_Image * miBonusIcon[10];
-		MI_Image * miBonusBackground[10];
+    MI_Image * miBonusIcon[10];
+    MI_Image * miBonusBackground[10];
 
-		MI_Image * miTourStopLeftHeaderBar;
-		MI_Image * miTourStopMenuRightHeaderBar;
-		MI_Text * miTourStopMenuHeaderText;
+    MI_Image * miTourStopLeftHeaderBar;
+    MI_Image * miTourStopMenuRightHeaderBar;
+    MI_Text * miTourStopMenuHeaderText;
 
-		bool fIsWorld;
+    bool fIsWorld;
 };
 
 class MI_TournamentScoreboard : public UI_Control
 {
-	public:
+public:
 
-		MI_TournamentScoreboard(gfxSprite * spr_background, short x, short y);
-		virtual ~MI_TournamentScoreboard();
+    MI_TournamentScoreboard(gfxSprite * spr_background, short x, short y);
+    virtual ~MI_TournamentScoreboard();
 
-		void Update();
-		void Draw();
+    void Update();
+    void Draw();
 
-		void CreateScoreboard(short numTeams, short numGames, gfxSprite * spr_icons);
-		void RefreshWorldScores(short gameWinner);
-		void RefreshTourScores();
-		void RefreshTournamentScores(short gameWinner);
-		void DetermineScoreboardWinners();
-		void StopSwirl();
+    void CreateScoreboard(short numTeams, short numGames, gfxSprite * spr_icons);
+    void RefreshWorldScores(short gameWinner);
+    void RefreshTourScores();
+    void RefreshTournamentScores(short gameWinner);
+    void DetermineScoreboardWinners();
+    void StopSwirl();
 
-	private:
+private:
 
-		void FreeScoreboard();
-		short GetYFromPlace(short iPlace) {return iy + iPlace * 69 + (4 - iNumTeams) * 35;}
-		float GetIconSpacing() {return (float)(372 - iNumGames * 32) / (float)(iNumGames + 1);}
+    void FreeScoreboard();
+    short GetYFromPlace(short iPlace) {
+        return iy + iPlace * 69 + (4 - iNumTeams) * 35;
+    }
+    float GetIconSpacing() {
+        return (float)(372 - iNumGames * 32) / (float)(iNumGames + 1);
+    }
 
-		bool fCreated;
+    bool fCreated;
 
-		MI_Image ** miTeamImages;
-		MI_Image *** miIconImages;
-		MI_Image *** miPlayerImages;
+    MI_Image ** miTeamImages;
+    MI_Image *** miIconImages;
+    MI_Image *** miPlayerImages;
 
-		short iNumTeams;
-		short iNumGames;
+    short iNumTeams;
+    short iNumGames;
 
-		short iTournamentWinner;
-		short iGameWinner;
+    short iTournamentWinner;
+    short iGameWinner;
 
-		short iSwirlIconTeam;
-		short iSwirlIconGame;
+    short iSwirlIconTeam;
+    short iSwirlIconGame;
 
-		short iFireworksCounter;
-		short iWinnerTextCounter;
-		short iExplosionCounter;
+    short iFireworksCounter;
+    short iWinnerTextCounter;
+    short iExplosionCounter;
 
-		gfxSprite * sprBackground;
-		gfxSprite * sprIcons;
+    gfxSprite * sprBackground;
+    gfxSprite * sprIcons;
 
-		short iTeamIDs[4][3];
-		short iTeamCounts[4];
+    short iTeamIDs[4][3];
+    short iTeamCounts[4];
 
-		MI_ScoreText * tourScores[4];
-		MI_ScoreText * tourPoints[10];
-		MI_Image * miTourPointBar;
-		MI_Image * tourBonus[10];
+    MI_ScoreText * tourScores[4];
+    MI_ScoreText * tourPoints[10];
+    MI_Image * miTourPointBar;
+    MI_Image * tourBonus[10];
 
-		MI_Image * worldBonus[4][MAX_WORLD_BONUSES_AWARDED];
-		MI_Image * worldScoreModifier;
-		MI_Image * worldPlace[4];
-		MI_ScoreText * worldScore;
-		MI_Image * worldPointsBackground[4];
+    MI_Image * worldBonus[4][MAX_WORLD_BONUSES_AWARDED];
+    MI_Image * worldScoreModifier;
+    MI_Image * worldPlace[4];
+    MI_ScoreText * worldScore;
+    MI_Image * worldPointsBackground[4];
 };
 
 class MI_BonusWheel : public UI_Control
 {
-	public:
+public:
 
-		MI_BonusWheel(short x, short y);
-		virtual ~MI_BonusWheel();
+    MI_BonusWheel(short x, short y);
+    virtual ~MI_BonusWheel();
 
-		MenuCodeEnum Modify(bool modify);
+    MenuCodeEnum Modify(bool modify);
 
-		void Update();
-		void Draw();
+    void Update();
+    void Draw();
 
-		bool GetPowerupSelectionDone() {return fPowerupSelectionDone;}
-		void Reset(bool fTournament);
+    bool GetPowerupSelectionDone() {
+        return fPowerupSelectionDone;
+    }
+    void Reset(bool fTournament);
 
-	private:
+private:
 
-		short iState;
-		short iDisplayPowerupIndex;
-		short iDisplayPowerupTimer;
+    short iState;
+    short iDisplayPowerupIndex;
+    short iDisplayPowerupTimer;
 
-		MI_Image * miBonusImages[NUMBONUSITEMSONWHEEL];
-		MI_Image ** miPlayerImages;
+    MI_Image * miBonusImages[NUMBONUSITEMSONWHEEL];
+    MI_Image ** miPlayerImages;
 
-		MI_Button * miContinueButton;
+    MI_Button * miContinueButton;
 
-		short iChosenPowerups[NUMBONUSITEMSONWHEEL];
+    short iChosenPowerups[NUMBONUSITEMSONWHEEL];
 
-		short iPressSelectTimer;
-		bool fPressedSelect;
-		bool fPowerupSelectionDone;
+    short iPressSelectTimer;
+    bool fPressedSelect;
+    bool fPowerupSelectionDone;
 
-		short iSelectorAnimation;
-		short iSelectorAnimationCounter;
+    short iSelectorAnimation;
+    short iSelectorAnimationCounter;
 
-		float dSelectionSpeed;
-		float dSelectionAngle;
-		short iSelectedPowerup;
-		short iNextSelectionSoundIndex;
-		float dSelectionSector[NUMBONUSITEMSONWHEEL + 1];
+    float dSelectionSpeed;
+    float dSelectionAngle;
+    short iSelectedPowerup;
+    short iNextSelectionSoundIndex;
+    float dSelectionSector[NUMBONUSITEMSONWHEEL + 1];
 
-		float dSelectionWinddownSpeed;
+    float dSelectionWinddownSpeed;
 
-		float dSelectionSpeedGoal;
-		short iSelectionSpeedTimer;
+    float dSelectionSpeedGoal;
+    short iSelectionSpeedTimer;
 
-		short iNumPlayers;
-		short iWinningTeam;
+    short iNumPlayers;
+    short iWinningTeam;
 
-		bool fCpuControlled;
+    bool fCpuControlled;
 };
 
 #ifdef _XBOX
 class MI_ScreenResize : public UI_Control
 {
-	public:
+public:
 
-		MI_ScreenResize();
-		virtual ~MI_ScreenResize();
+    MI_ScreenResize();
+    virtual ~MI_ScreenResize();
 
-		void Draw();
+    void Draw();
 
-		MenuCodeEnum SendInput(CPlayerInput * playerInput);
-		MenuCodeEnum Modify(bool modify);
+    MenuCodeEnum SendInput(CPlayerInput * playerInput);
+    MenuCodeEnum Modify(bool modify);
 
-	private:
+private:
 
-		MI_Text * miText[7];
-		float dPreset;
+    MI_Text * miText[7];
+    float dPreset;
 };
 #endif //_XBOX
 
 class MFS_ListItem
 {
-	public:
-		MFS_ListItem()
-		{
-			sName = "";
-			fSelected = false;
-		}
+public:
+    MFS_ListItem() {
+        sName = "";
+        fSelected = false;
+    }
 
-		MFS_ListItem(std::string sname, short icon, bool fselected)
-		{
-			sName = sname;
-			iIcon = icon;
-			fSelected = fselected;
-		}
+    MFS_ListItem(std::string sname, short icon, bool fselected) {
+        sName = sname;
+        iIcon = icon;
+        fSelected = fselected;
+    }
 
-		~MFS_ListItem();
+    ~MFS_ListItem();
 
-		std::string sName;  //Display name
-		short iIcon;		//Icon to display with name
-		bool fSelected;     //Filter selected
+    std::string sName;  //Display name
+    short iIcon;		//Icon to display with name
+    bool fSelected;     //Filter selected
 };
 
 class MI_MapFilterScroll : public UI_Control
 {
-	public:
-		MI_MapFilterScroll(gfxSprite * nspr, short x, short y, short width, short numlines);
-		virtual ~MI_MapFilterScroll();
+public:
+    MI_MapFilterScroll(gfxSprite * nspr, short x, short y, short width, short numlines);
+    virtual ~MI_MapFilterScroll();
 
-		void Update();
-		void Draw();
+    void Update();
+    void Draw();
 
-		MenuCodeEnum SendInput(CPlayerInput * playerInput);
-		MenuCodeEnum Modify(bool modify);
+    MenuCodeEnum SendInput(CPlayerInput * playerInput);
+    MenuCodeEnum Modify(bool modify);
 
-		void Add(std::string name, short icon);
+    void Add(std::string name, short icon);
 
-		bool MoveNext();
-		bool MovePrev();
+    bool MoveNext();
+    bool MovePrev();
 
-	private:
-		
-		std::vector<MFS_ListItem*> items;
-		std::vector<MFS_ListItem*>::iterator current;
+private:
 
-		gfxSprite * spr;
+    std::vector<MFS_ListItem*> items;
+    std::vector<MFS_ListItem*>::iterator current;
 
-		short iSelectedColumn;
-		short iNumLines;
-		short iSelectedLine;
-		unsigned short iIndex;
-		short iWidth;
-		short iOffset;
+    gfxSprite * spr;
 
-		short iTopStop;
-		short iBottomStop;
+    short iSelectedColumn;
+    short iNumLines;
+    short iSelectedLine;
+    unsigned short iIndex;
+    short iWidth;
+    short iOffset;
+
+    short iTopStop;
+    short iBottomStop;
 };
 
 class MI_MapBrowser : public UI_Control
 {
-	public:
-		MI_MapBrowser();
-		virtual ~MI_MapBrowser();
+public:
+    MI_MapBrowser();
+    virtual ~MI_MapBrowser();
 
-		void Update();
-		void Draw();
+    void Update();
+    void Draw();
 
-		MenuCodeEnum SendInput(CPlayerInput * playerInput);
-		MenuCodeEnum Modify(bool modify);
+    MenuCodeEnum SendInput(CPlayerInput * playerInput);
+    MenuCodeEnum Modify(bool modify);
 
-		void Reset(short type);
+    void Reset(short type);
 
-	private:
+private:
 
-		void LoadPage(short page, bool fUseFilters);
+    void LoadPage(short page, bool fUseFilters);
 
-		short iPage;
-		short iSelectedCol;
-		short iSelectedRow;
-		short iSelectedIndex;
+    short iPage;
+    short iSelectedCol;
+    short iSelectedRow;
+    short iSelectedIndex;
 
-		SDL_Surface * mapSurfaces[9];
-		MapListNode * mapListNodes[9];
-		const char * mapNames[9];
-		std::map<std::string, MapListNode*>::iterator mapListItr[9];
+    SDL_Surface * mapSurfaces[9];
+    MapListNode * mapListNodes[9];
+    const char * mapNames[9];
+    std::map<std::string, MapListNode*>::iterator mapListItr[9];
 
-		short iFilterTagAnimationTimer;
-		short iFilterTagAnimationFrame;
-		
-		short iType;
-		short iMapCount;
+    short iFilterTagAnimationTimer;
+    short iFilterTagAnimationFrame;
 
-		SDL_Rect srcRectBackground;
-		SDL_Rect dstRectBackground;
+    short iType;
+    short iMapCount;
+
+    SDL_Rect srcRectBackground;
+    SDL_Rect dstRectBackground;
 };
 
 class MI_World : public UI_Control
 {
-	public:
+public:
 
-		MI_World();
-		virtual ~MI_World();
+    MI_World();
+    virtual ~MI_World();
 
-		void Update();
-		void Draw();
+    void Update();
+    void Draw();
 
-		MenuCodeEnum SendInput(CPlayerInput * playerInput);
-		MenuCodeEnum Modify(bool modify);
+    MenuCodeEnum SendInput(CPlayerInput * playerInput);
+    MenuCodeEnum Modify(bool modify);
 
-		void Init();
-		void SetControllingTeam(short iPlayerID);
-		void DisplayTeamControlAnnouncement();
+    void Init();
+    void SetControllingTeam(short iPlayerID);
+    void DisplayTeamControlAnnouncement();
 
-		void SetCurrentStageToCompleted(short iWinningTeam);
-		void ClearCloud() {fUsingCloud = false;}
+    void SetCurrentStageToCompleted(short iWinningTeam);
+    void ClearCloud() {
+        fUsingCloud = false;
+    }
 
-	private:
+private:
 
-		MenuCodeEnum InitGame(short iStage, short iPlayer, bool fNeedAiControl);
+    MenuCodeEnum InitGame(short iStage, short iPlayer, bool fNeedAiControl);
 
-		void RestartDrawCycleIfNeeded();
-		bool UsePowerup(short iPlayer, short iTeam, short iIndex, bool fPopupIsUp);
+    void RestartDrawCycleIfNeeded();
+    bool UsePowerup(short iPlayer, short iTeam, short iIndex, bool fPopupIsUp);
 
-		void SetMapOffset();
-		void RepositionMapImage();
+    void SetMapOffset();
+    void RepositionMapImage();
 
-		void AdvanceTurn();
-		void UpdateMapSurface(short iCycleIndex);
-		void UseCloud(bool fUseCloud);
+    void AdvanceTurn();
+    void UpdateMapSurface(short iCycleIndex);
+    void UseCloud(bool fUseCloud);
 
-		short iState;
-		bool  fItemPopup;
-		short iStateTransition[4];
-		short iItemPopupDrawY[4];
-		short iPopupOffsets[4];
-		short iPopupOffsetsCurrent[4];
-		short iPopupOrder[4];
-		short iNumPopups;
-		short iStoredItemPopupDrawY;
+    short iState;
+    bool  fItemPopup;
+    short iStateTransition[4];
+    short iItemPopupDrawY[4];
+    short iPopupOffsets[4];
+    short iPopupOffsetsCurrent[4];
+    short iPopupOrder[4];
+    short iNumPopups;
+    short iStoredItemPopupDrawY;
 
-		bool iPopupFlag[4];
+    bool iPopupFlag[4];
 
-		short iItemCol[4];
-		short iItemPage[4];
+    short iItemCol[4];
+    short iItemPage[4];
 
-		SDL_Surface * sMapSurface[2];
-		SDL_Rect rectSrcSurface;
-		SDL_Rect rectDstSurface;
+    SDL_Surface * sMapSurface[2];
+    SDL_Rect rectSrcSurface;
+    SDL_Rect rectDstSurface;
 
-		short iCurrentSurfaceIndex;
-		short iCycleIndex;
-		short iDrawFullRefresh;
+    short iCurrentSurfaceIndex;
+    short iCycleIndex;
+    short iDrawFullRefresh;
 
-		short iAnimationFrame;
+    short iAnimationFrame;
 
-		short iMapOffsetX;
-		short iMapOffsetY;
+    short iMapOffsetX;
+    short iMapOffsetY;
 
-		short iMapDrawOffsetCol;
-		short iMapDrawOffsetRow;
+    short iMapDrawOffsetCol;
+    short iMapDrawOffsetRow;
 
-		short iNextMapDrawOffsetCol;
-		short iNextMapDrawOffsetRow;
-			
-		short iDrawWidth, iDrawHeight;
-		short iSrcOffsetX, iSrcOffsetY;
-		short iDstOffsetX, iDstOffsetY;
+    short iNextMapDrawOffsetCol;
+    short iNextMapDrawOffsetRow;
 
-		short iControllingTeam;
-		short iControllingPlayerId;
-		short iReturnDirection;
+    short iDrawWidth, iDrawHeight;
+    short iSrcOffsetX, iSrcOffsetY;
+    short iDstOffsetX, iDstOffsetY;
 
-		bool fForceStageStart;
-		short iVehicleId;
+    short iControllingTeam;
+    short iControllingPlayerId;
+    short iReturnDirection;
 
-		short iWarpCol, iWarpRow;
+    bool fForceStageStart;
+    short iVehicleId;
 
-		short iScreenfade;
-		short iScreenfadeRate;
+    short iWarpCol, iWarpRow;
 
-		float dTeleportStarRadius;
-		float dTeleportStarAngle;
-		short iTeleportStarAnimationFrame;
-		short iTeleportStarAnimationTimer;
+    short iScreenfade;
+    short iScreenfadeRate;
 
-		bool fNoInterestingMoves;
+    float dTeleportStarRadius;
+    float dTeleportStarAngle;
+    short iTeleportStarAnimationFrame;
+    short iTeleportStarAnimationTimer;
 
-		short iSleepTurns;
-		bool fUsingCloud;
+    bool fNoInterestingMoves;
 
-		short iPressSelectTimer;
-		COutputControl * pressSelectKeys;
+    short iSleepTurns;
+    bool fUsingCloud;
+
+    short iPressSelectTimer;
+    COutputControl * pressSelectKeys;
 };
 
 

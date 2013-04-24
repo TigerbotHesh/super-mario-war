@@ -15,17 +15,16 @@ bool CopyFile(const char *src, const char *dest, bool dontOverwrite)
     size_t actual_bufsiz;
 
     if ((dontOverwrite && stat(dest, &fileinfo) != -1) ||
-        (s = fopen(src, "rb")) == NULL || (d = fopen(dest, "wb")) == NULL)
-    {
+            (s = fopen(src, "rb")) == NULL || (d = fopen(dest, "wb")) == NULL) {
         if (s != NULL)
-             fclose(s);
+            fclose(s);
         if (d != NULL)
-             fclose(d);
+            fclose(d);
         return false;
     }
 
     while ((actual_bufsiz = fread(buf, sizeof(char), BUFSIZ, s)) > 0 &&
-        fwrite(buf, sizeof(char), actual_bufsiz, d) == actual_bufsiz);
+            fwrite(buf, sizeof(char), actual_bufsiz, d) == actual_bufsiz);
 
     fclose(s);
     fclose(d);

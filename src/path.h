@@ -25,7 +25,7 @@ const std::string getFileFromPath(const std::string &path);
 std::string	GetHomeDirectory();
 
 #ifdef __MACOSX__
-    void Initialize_Paths();
+void Initialize_Paths();
 #else
 #  define Initialize_Paths() ;
 #endif

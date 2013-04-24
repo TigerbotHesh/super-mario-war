@@ -48,69 +48,67 @@ void net_close();
 bool net_runserver();
 bool net_connectclient();
 
-struct ServerClient
-{
-	int active;
-	TCPsocket sock;
-	IPaddress peer;
-	Uint8 name[256 + 1];
+struct ServerClient {
+    int active;
+    TCPsocket sock;
+    IPaddress peer;
+    Uint8 name[256 + 1];
 };
 
-struct ClientPeer
-{
-	int active;
-	Uint8 name[256 + 1];
+struct ClientPeer {
+    int active;
+    Uint8 name[256 + 1];
 };
 
 class NetServer
 {
-	public:
+public:
 
-		NetServer();
-		~NetServer();
+    NetServer();
+    ~NetServer();
 
-		bool startserver();
-		void update();
+    bool startserver();
+    void update();
 
-		void handleserver();
-		void handleclient(int which);
-		void sendnewclientmessage(int about, int to);
-		void broadcastmessage(char * szMsg);
+    void handleserver();
+    void handleclient(int which);
+    void sendnewclientmessage(int about, int to);
+    void broadcastmessage(char * szMsg);
 
-		void cleanup();
+    void cleanup();
 
-	private:
-		
-		IPaddress ip;
-		TCPsocket tcpsock;
-		SDLNet_SocketSet socketset;
+private:
 
-		int numclients;
-		ServerClient clients[MAXCLIENTS];
+    IPaddress ip;
+    TCPsocket tcpsock;
+    SDLNet_SocketSet socketset;
+
+    int numclients;
+    ServerClient clients[MAXCLIENTS];
 };
 
 class NetClient
 {
-	public:
+public:
 
-		NetClient();
-		~NetClient();
+    NetClient();
+    ~NetClient();
 
-		bool connecttoserver();
-		void update();
-		void handleserver();
-		int handleserverdata(Uint8 *data);
-		void sendjoin();
-		
-		void cleanup();
-		
-	private:
+    bool connecttoserver();
+    void update();
+    void handleserver();
+    int handleserverdata(Uint8 *data);
+    void sendjoin();
 
-		IPaddress ip;
-		TCPsocket tcpsock;
-		SDLNet_SocketSet socketset;
+    void cleanup();
 
-		ClientPeer peers[MAXCLIENTS];
+private:
+
+    IPaddress ip;
+    TCPsocket tcpsock;
+    SDLNet_SocketSet socketset;
+
+    ClientPeer peers[MAXCLIENTS];
 };
 
 #endif //__NETWORK_H_

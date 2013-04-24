@@ -12,55 +12,63 @@ void sfx_setsoundvolume(int volume);
 
 class sfxSound
 {
-	public:
-		sfxSound();
-		~sfxSound();
+public:
+    sfxSound();
+    ~sfxSound();
 
-		bool init(const std::string& filename);
+    bool init(const std::string& filename);
 
-		int play();
-		int playloop(int iLoop);
-		void stop();
-		void sfx_pause();
+    int play();
+    int playloop(int iLoop);
+    void stop();
+    void sfx_pause();
 
-		void resetpause() {paused = false;}
+    void resetpause() {
+        paused = false;
+    }
 
-		void reset();
-		bool isready() {return ready;}
-		int isplaying();
+    void reset();
+    bool isready() {
+        return ready;
+    }
+    int isplaying();
 
-		void clearchannel();
-		
-	private:
-		Mix_Chunk *sfx;
-		int channel;
-		bool paused;
-		bool ready;
-		int starttime;
-		short instances;
+    void clearchannel();
+
+private:
+    Mix_Chunk *sfx;
+    int channel;
+    bool paused;
+    bool ready;
+    int starttime;
+    short instances;
 };
 
 class sfxMusic
 {
-	public:
-		sfxMusic();
-		~sfxMusic();
+public:
+    sfxMusic();
+    ~sfxMusic();
 
-		bool load(const std::string& filename);
+    bool load(const std::string& filename);
 
-		void play(bool fPlayonce, bool fResume);
-		void stop();
-		void sfx_pause();
+    void play(bool fPlayonce, bool fResume);
+    void stop();
+    void sfx_pause();
 
-		void resetpause() {paused = false;}
+    void resetpause() {
+        paused = false;
+    }
 
-		void reset();
-		bool isready() {return ready;}
-		int isplaying();
+    void reset();
+    bool isready() {
+        return ready;
+    }
+    int isplaying();
 
-	private:
-		Mix_Music *music;
-		bool paused;
-		bool ready;
+private:
+    Mix_Music *music;
+    bool paused;
+    bool ready;
 };
 

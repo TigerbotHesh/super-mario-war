@@ -4,12 +4,12 @@
 #include <cstring>
 
 #ifdef _WIN32
-	#ifdef _XBOX
-		#include <xtl.h>
-	#else
-		#include <shlobj.h>
-		#include <SDL_platform.h>
-	#endif
+#ifdef _XBOX
+#include <xtl.h>
+#else
+#include <shlobj.h>
+#include <SDL_platform.h>
+#endif
 #else
 #include <stdlib.h>
 #endif
@@ -21,33 +21,33 @@ extern char *RootDataDirectory;
 using namespace std;
 char SMW_Root_Data_Dir[PATH_MAX + 2] = "";
 
-std::string	GetHomeDirectory() {
-	//NOTE: _WIN32 is also defined on _XBOX
+std::string	GetHomeDirectory()
+{
+    //NOTE: _WIN32 is also defined on _XBOX
 #ifdef _XBOX
-		return std::string("D:\\.smw\\");
+    return std::string("D:\\.smw\\");
 #elif __MACOSX__
-		char * folder=getenv("HOME");
-			return std::string(folder) + std::string("/Library/Preferences/.smw/");
+    char * folder=getenv("HOME");
+    return std::string(folder) + std::string("/Library/Preferences/.smw/");
 #elif	_WIN32
-		 char folder[ MAX_PATH ];
-		if (SHGetFolderPathA( NULL, CSIDL_PROFILE, NULL, 0, folder ) != S_OK)
-		{
-			throw "I could not retrieve the user's home directory!\n";
-		}
+    char folder[ MAX_PATH ];
+    if (SHGetFolderPathA( NULL, CSIDL_PROFILE, NULL, 0, folder ) != S_OK) {
+        throw "I could not retrieve the user's home directory!\n";
+    }
 
-		return std::string(folder) + std::string("\\.smw\\");
+    return std::string(folder) + std::string("\\.smw\\");
 #else // catch-all for Linux-based systems
-			char * folder=getenv("HOME");
-			return std::string(folder) + std::string("/.smw/");
+    char * folder=getenv("HOME");
+    return std::string(folder) + std::string("/.smw/");
 #endif
 }
 
 bool File_Exists (const std::string fileName)
 {
-	struct stat buffer;
-	int i = stat(fileName.c_str(), &buffer);
-   
-	return (i == 0);
+    struct stat buffer;
+    int i = stat(fileName.c_str(), &buffer);
+
+    return (i == 0);
 }
 
 /*********************************************************************
@@ -60,10 +60,9 @@ bool File_Exists (const std::string fileName)
 /* Call this when your application launches */
 void Initialize_Paths()
 {
-	if(SMW_Root_Data_Dir[0] != 0)
-	{ 
-		return; 
-	}
+    if(SMW_Root_Data_Dir[0] != 0) {
+        return;
+    }
 
 #ifdef APPBUNDLE
     UInt8 temp[PATH_MAX];
@@ -75,27 +74,27 @@ void Initialize_Paths()
         return;
     }
 
-	dirURL = CFBundleCopyBundleURL(mainBundle);
-	
+    dirURL = CFBundleCopyBundleURL(mainBundle);
+
     if (!CFURLGetFileSystemRepresentation(dirURL, TRUE, temp,
-        PATH_MAX)) {
+                                          PATH_MAX)) {
         cout << "Could not get file system representation" << endl;
         return;
     }
 
-	strlcat(SMW_Root_Data_Dir, (char*)temp, PATH_MAX); 
-	int i = strlen(SMW_Root_Data_Dir) -1; 
-	while(SMW_Root_Data_Dir[i] !='/'){ 
-	   SMW_Root_Data_Dir[i] = 0; 
-	   --i; 
-	} 
-	SMW_Root_Data_Dir[i] = 0; 
+    strlcat(SMW_Root_Data_Dir, (char*)temp, PATH_MAX);
+    int i = strlen(SMW_Root_Data_Dir) -1;
+    while(SMW_Root_Data_Dir[i] !='/') {
+        SMW_Root_Data_Dir[i] = 0;
+        --i;
+    }
+    SMW_Root_Data_Dir[i] = 0;
 
     CFRelease(dirURL);
 #else
-	strlcat(SMW_Root_Data_Dir, "./", 4);
+    strlcat(SMW_Root_Data_Dir, "./", 4);
 #endif
-	cout << "Located data folder at: " << SMW_Root_Data_Dir << endl;
+    cout << "Located data folder at: " << SMW_Root_Data_Dir << endl;
 }
 #endif
 
@@ -106,35 +105,34 @@ const string convertPath(const string& source)
 {
     string s;
 
-/****** XBOX ******/
+    /****** XBOX ******/
 #ifdef _XBOX
-	
-	s = source;
+
+    s = source;
     int slash = string :: npos;
 
     while (string::npos != (slash = s.find("/")))
         s.replace(slash, 1, "\\");
 
     s = "D:\\" + s;
-	return s;
+    return s;
 #else
     static bool are_paths_initialized = false;
 
-    if (!are_paths_initialized)
-	{
+    if (!are_paths_initialized) {
 //		#ifdef PREFIXPATH
-			strcpy(SMW_Root_Data_Dir, RootDataDirectory);
+        strcpy(SMW_Root_Data_Dir, RootDataDirectory);
 //		#endif
 
-		#ifdef __MACOSX__
-			Initialize_Paths();
-		#endif
+#ifdef __MACOSX__
+        Initialize_Paths();
+#endif
 
-		#ifndef _WIN32
-			strcat(SMW_Root_Data_Dir, "/");
-		#endif
-	    
-		are_paths_initialized = true;
+#ifndef _WIN32
+        strcat(SMW_Root_Data_Dir, "/");
+#endif
+
+        are_paths_initialized = true;
     }
 
     s = SMW_Root_Data_Dir;
@@ -145,57 +143,55 @@ const string convertPath(const string& source)
 
 const string convertPath(const string& source, const string& pack)
 {
-	if(source.find("gfx/packs/") == 0)
-	{
-		string trailingdir = source.substr(9);
+    if(source.find("gfx/packs/") == 0) {
+        string trailingdir = source.substr(9);
 
 #ifdef _XBOX
-		const string s = convertPartialPath(pack + trailingdir);  //Hack because pack already has d:\ in it
+        const string s = convertPartialPath(pack + trailingdir);  //Hack because pack already has d:\ in it
 #else
-		const string s = convertPath(pack + trailingdir);
+        const string s = convertPath(pack + trailingdir);
 #endif
 
-		//If the file exists, return the path to it
-		if(File_Exists(s))
-			return s;
+        //If the file exists, return the path to it
+        if(File_Exists(s))
+            return s;
 
-		//If not, use the classic file
-		return convertPath("gfx/packs/Classic" + trailingdir);
-	}
+        //If not, use the classic file
+        return convertPath("gfx/packs/Classic" + trailingdir);
+    }
 
-	if(source.find("sfx/packs/") == 0)
-	{
-		string trailingdir = source.substr(9);
+    if(source.find("sfx/packs/") == 0) {
+        string trailingdir = source.substr(9);
 
-#ifdef _XBOX		
-		const string s = convertPartialPath(pack + trailingdir);  //Hack because pack already has d:\ in it
+#ifdef _XBOX
+        const string s = convertPartialPath(pack + trailingdir);  //Hack because pack already has d:\ in it
 #else
-		const string s = convertPath(pack + trailingdir);
+        const string s = convertPath(pack + trailingdir);
 #endif
 
-		//If the file exists, return the path to it
-		if(File_Exists(s))
-			return s;
+        //If the file exists, return the path to it
+        if(File_Exists(s))
+            return s;
 
-		//If not, use the classic file
-		return convertPath("sfx/packs/Classic" + trailingdir);
-	}
+        //If not, use the classic file
+        return convertPath("sfx/packs/Classic" + trailingdir);
+    }
 
-	return convertPath(source);
+    return convertPath(source);
 }
 
 const string getDirectorySeperator()
 {
 #ifdef _XBOX
-	return std::string("\\");
+    return std::string("\\");
 #else
-	return std::string("/");
+    return std::string("/");
 #endif
 }
 
 const string convertPartialPath(const string & source)
 {
-	string s = source;
+    string s = source;
 
 #ifdef _XBOX
     int slash = string :: npos;
@@ -209,11 +205,11 @@ const string convertPartialPath(const string & source)
 
 const string getFileFromPath(const string &path)
 {
-	short iPos = path.find_last_of(getDirectorySeperator()[0]);
+    short iPos = path.find_last_of(getDirectorySeperator()[0]);
 
-	if(iPos > 0)
-		return path.substr(iPos + 1);
+    if(iPos > 0)
+        return path.substr(iPos + 1);
 
-	return path;
+    return path;
 }
 

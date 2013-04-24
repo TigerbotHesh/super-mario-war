@@ -5,274 +5,280 @@
 
 class MI_World;
 
-struct WorldMapTile
-{
-	//Id is used for searching for AI
-	short iID;
+struct WorldMapTile {
+    //Id is used for searching for AI
+    short iID;
 
-	short iType;
-	short iBackgroundWater;
-	short iBackgroundSprite;
-	short iForegroundSprite;
+    short iType;
+    short iBackgroundWater;
+    short iBackgroundSprite;
+    short iForegroundSprite;
 
-	short iConnectionType;
-	bool fConnection[4];
+    short iConnectionType;
+    bool fConnection[4];
 
-	short iWarp;
+    short iWarp;
 
-	short iCompleted;
-	bool fAnimated;
+    short iCompleted;
+    bool fAnimated;
 
-	short iCol;
-	short iRow;
+    short iCol;
+    short iRow;
 
-	short iVehicleBoundary;
+    short iVehicleBoundary;
 };
 
 class WorldMovingObject
 {
-	public:
-		WorldMovingObject();
-		virtual ~WorldMovingObject();
+public:
+    WorldMovingObject();
+    virtual ~WorldMovingObject();
 
-		void Init(short iCol, short iRow, short iSprite, short iInitialDirection, short tilesize);
-		virtual void Move(short iDirection);
-		virtual bool Update();
-		void Draw(short iWorldOffsetX, short iWorldOffsetY);
-		void FaceDirection(short iDirection);
-		void SetPosition(short iCol, short iRow);
+    void Init(short iCol, short iRow, short iSprite, short iInitialDirection, short tilesize);
+    virtual void Move(short iDirection);
+    virtual bool Update();
+    void Draw(short iWorldOffsetX, short iWorldOffsetY);
+    void FaceDirection(short iDirection);
+    void SetPosition(short iCol, short iRow);
 
-	protected:
+protected:
 
-		short ix;
-		short iy;
-		short iCurrentTileX;
-		short iCurrentTileY;
-		short iDestTileX;
-		short iDestTileY;
-			
-		short iState;
-		short iDrawSprite;
-		short iDrawDirection;
-		short iAnimationFrame;
-		short iAnimationTimer;
+    short ix;
+    short iy;
+    short iCurrentTileX;
+    short iCurrentTileY;
+    short iDestTileX;
+    short iDestTileY;
 
-		short iTileSize;
-		short iTileSheet;
-	
-	friend class WorldMap;
-	friend void takescreenshot();
+    short iState;
+    short iDrawSprite;
+    short iDrawDirection;
+    short iAnimationFrame;
+    short iAnimationTimer;
+
+    short iTileSize;
+    short iTileSheet;
+
+    friend class WorldMap;
+    friend void takescreenshot();
 };
 
 class WorldPlayer : public WorldMovingObject
 {
-	public:
-	
-		WorldPlayer();
-		~WorldPlayer();
+public:
 
-		void Init(short iCol, short iRow);
+    WorldPlayer();
+    ~WorldPlayer();
 
-		void SetSprite(short iPlayer);
-		void Draw(short iWorldOffsetX, short iWorldOffsetY);
+    void Init(short iCol, short iRow);
 
-	friend class WorldMap;
+    void SetSprite(short iPlayer);
+    void Draw(short iWorldOffsetX, short iWorldOffsetY);
+
+    friend class WorldMap;
 };
 
 class WorldVehicle : public WorldMovingObject
 {
-	public:
-		
-		WorldVehicle();
-		~WorldVehicle();
+public:
 
-		void Init(short iCol, short iRow, short iAction, short iSprite, short iMinMoves, short iMaxMoves, bool fSpritePaces, short iInitialDirection, short iBoundary, short tilesize);
-		void Move();
-		
-		bool Update();
-		void Draw(short iWorldOffsetX, short iWorldOffsetY, bool fVehiclesSleeping);
+    WorldVehicle();
+    ~WorldVehicle();
 
-	private:
+    void Init(short iCol, short iRow, short iAction, short iSprite, short iMinMoves, short iMaxMoves, bool fSpritePaces, short iInitialDirection, short iBoundary, short tilesize);
+    void Move();
 
-		void SetNextDest();
-					
-		SDL_Rect srcRects[5];
+    bool Update();
+    void Draw(short iWorldOffsetX, short iWorldOffsetY, bool fVehiclesSleeping);
 
-		short iMinMoves;
-		short iMaxMoves;
-		short iNumMoves;
+private:
 
-		short iActionId;
+    void SetNextDest();
 
-		bool fEnabled;
+    SDL_Rect srcRects[5];
 
-		bool fSpritePaces;
-		short iPaceOffset;
-		short iPaceTimer;
+    short iMinMoves;
+    short iMaxMoves;
+    short iNumMoves;
 
-		short iBoundary;
+    short iActionId;
 
-	friend class WorldMap;
-	friend void AddVehicleToTile(short iCol, short iRow, short iType);
-	friend void RemoveVehicleFromTile(short iCol, short iRow);
-	friend void ReadVehiclesIntoEditor();
-	friend void WriteVehiclesIntoWorld();
-	
-	friend int editor_stage();
-	friend int editor_edit();
-	friend int resize_world();
-	friend int editor_vehicles();
-	friend int main(int argc, char *argv[]);
+    bool fEnabled;
+
+    bool fSpritePaces;
+    short iPaceOffset;
+    short iPaceTimer;
+
+    short iBoundary;
+
+    friend class WorldMap;
+    friend void AddVehicleToTile(short iCol, short iRow, short iType);
+    friend void RemoveVehicleFromTile(short iCol, short iRow);
+    friend void ReadVehiclesIntoEditor();
+    friend void WriteVehiclesIntoWorld();
+
+    friend int editor_stage();
+    friend int editor_edit();
+    friend int resize_world();
+    friend int editor_vehicles();
+    friend int main(int argc, char *argv[]);
 };
 
 class WorldWarp
 {
-	public:
-		WorldWarp();
-		void Init(short id, short col1, short row1, short col2, short row2);
-		void GetOtherSide(short iCol, short iRow, short * iOtherCol, short * iOtherRow);
+public:
+    WorldWarp();
+    void Init(short id, short col1, short row1, short col2, short row2);
+    void GetOtherSide(short iCol, short iRow, short * iOtherCol, short * iOtherRow);
 
-	private:
-		short iCol1, iRow1;
-		short iCol2, iRow2;
-		short iID;
+private:
+    short iCol1, iRow1;
+    short iCol2, iRow2;
+    short iID;
 
-	friend class WorldMap;
-	friend void AddWarpToTile(short iCol, short iRow, short iType);
-	friend void RemoveWarpFromTile(short iCol, short iRow);
-	friend void ReadWarpsIntoEditor();
-	friend void WriteWarpsIntoWorld();
-	friend int editor_edit();
-	friend void takescreenshot();
+    friend class WorldMap;
+    friend void AddWarpToTile(short iCol, short iRow, short iType);
+    friend void RemoveWarpFromTile(short iCol, short iRow);
+    friend void ReadWarpsIntoEditor();
+    friend void WriteWarpsIntoWorld();
+    friend int editor_edit();
+    friend void takescreenshot();
 };
 
 class WorldMap
 {
-	public:
+public:
 
-		WorldMap();
-		~WorldMap();
+    WorldMap();
+    ~WorldMap();
 
-		bool Load(short iTileSize);
-		bool Save();
-		bool Save(const char * szPath);
+    bool Load(short iTileSize);
+    bool Save();
+    bool Save(const char * szPath);
 
-		void New(short iWidth, short iHeight);
-		void Resize(short iWidth, short iHeight);
-		void Clear();
+    void New(short iWidth, short iHeight);
+    void Resize(short iWidth, short iHeight);
+    void Clear();
 
-		void InitPlayer();
+    void InitPlayer();
 
-		bool Update(bool * fPlayerVehicleCollision);
-		void Draw(short iMapOffsetX, short iMapOffsetY, bool fDrawPlayer, bool fVehiclesSleeping);
-		
-		void UpdateTile(SDL_Surface * surface, short iCol, short iRow, short iMapDrawOffsetCol, short iMapDrawOffsetRow, short iAnimationFrame);
+    bool Update(bool * fPlayerVehicleCollision);
+    void Draw(short iMapOffsetX, short iMapOffsetY, bool fDrawPlayer, bool fVehiclesSleeping);
 
-		void ResetDrawCycle();
-		void DrawMapToSurface(SDL_Surface * surface);
-		void DrawMapToSurface(short iCycleIndex, bool fFullRefresh, SDL_Surface * surface, short iMapDrawOffsetCol, short iMapDrawOffsetRow, short iAnimationFrame);
+    void UpdateTile(SDL_Surface * surface, short iCol, short iRow, short iMapDrawOffsetCol, short iMapDrawOffsetRow, short iAnimationFrame);
 
-		void SetPlayerSprite(short iPlayerSprite);
-		bool IsVehicleMoving();
+    void ResetDrawCycle();
+    void DrawMapToSurface(SDL_Surface * surface);
+    void DrawMapToSurface(short iCycleIndex, bool fFullRefresh, SDL_Surface * surface, short iMapDrawOffsetCol, short iMapDrawOffsetRow, short iAnimationFrame);
 
-		void GetWorldSize(short * w, short * h) {*w = iWidth; *h = iHeight;}
+    void SetPlayerSprite(short iPlayerSprite);
+    bool IsVehicleMoving();
 
-		void GetPlayerPosition(short * iPlayerX, short * iPlayerY);
-		void SetPlayerPosition(short iPlayerCol, short iPlayerRow);
+    void GetWorldSize(short * w, short * h) {
+        *w = iWidth;
+        *h = iHeight;
+    }
 
-		void GetPlayerCurrentTile(short * iPlayerCurrentTileX, short * iPlayerCurrentTileY);
-		void GetPlayerDestTile(short * iPlayerDestTileX, short * iPlayerDestTileY);
+    void GetPlayerPosition(short * iPlayerX, short * iPlayerY);
+    void SetPlayerPosition(short iPlayerCol, short iPlayerRow);
 
-		short GetPlayerState();
+    void GetPlayerCurrentTile(short * iPlayerCurrentTileX, short * iPlayerCurrentTileY);
+    void GetPlayerDestTile(short * iPlayerDestTileX, short * iPlayerDestTileY);
 
-		short GetVehicleInPlayerTile(short * iVehicleIndex);
-		bool GetWarpInPlayerTile(short * iWarpCol, short * iWarpRow);
+    short GetPlayerState();
 
-		void MovePlayer(short iDirection);
-		void FacePlayer(short iDirection);
-		void MoveVehicles();
+    short GetVehicleInPlayerTile(short * iVehicleIndex);
+    bool GetWarpInPlayerTile(short * iWarpCol, short * iWarpRow);
 
-		void RemoveVehicle(short iVehicleIndex);
+    void MovePlayer(short iDirection);
+    void FacePlayer(short iDirection);
+    void MoveVehicles();
 
-		short NumVehiclesInTile(short iTileX, short iTileY);
+    void RemoveVehicle(short iVehicleIndex);
 
-		short GetVehicleStageScore(short iVehicleIndex);
-		void MoveBridges();
+    short NumVehiclesInTile(short iTileX, short iTileY);
 
-		void IsTouchingDoor(short iCol, short iRow, bool doors[4]);
-		bool IsDoor(short iCol, short iRow);
-		short UseKey(short iKeytype, short iCol, short iRow, bool fCloud);
+    short GetVehicleStageScore(short iVehicleIndex);
+    void MoveBridges();
 
-		short GetVehicleBoundary(short iCol, short iRow);
+    void IsTouchingDoor(short iCol, short iRow, bool doors[4]);
+    bool IsDoor(short iCol, short iRow);
+    short UseKey(short iKeytype, short iCol, short iRow, bool fCloud);
 
-		short GetNextInterestingMove(short iCol, short iRow);
+    short GetVehicleBoundary(short iCol, short iRow);
 
-		void SetInitialPowerups();
+    short GetNextInterestingMove(short iCol, short iRow);
 
-		short GetMusicCategory() {return iMusicCategory;}
+    void SetInitialPowerups();
 
-		const char * GetWorldName() {return worldName.c_str();}
+    short GetMusicCategory() {
+        return iMusicCategory;
+    }
 
-	private:
+    const char * GetWorldName() {
+        return worldName.c_str();
+    }
 
-		void Cleanup();
-		void SetTileConnections(short iCol, short iRow);
+private:
 
-		void DrawTileToSurface(SDL_Surface * surface, short iCol, short iRow, short iMapDrawOffsetCol, short iMapDrawOffsetRow, bool fFullRefresh, short iAnimationFrame, short iLayer = 0);
+    void Cleanup();
+    void SetTileConnections(short iCol, short iRow);
 
-		short iWidth;
-		short iHeight;
-		short iStartX, iStartY;
+    void DrawTileToSurface(SDL_Surface * surface, short iCol, short iRow, short iMapDrawOffsetCol, short iMapDrawOffsetRow, bool fFullRefresh, short iAnimationFrame, short iLayer = 0);
 
-		short iNumStages;
-		short iNumWarps;
-		short iNumVehicles;
+    short iWidth;
+    short iHeight;
+    short iStartX, iStartY;
 
-		WorldMapTile ** tiles;
-		WorldPlayer player;
-		WorldVehicle * vehicles;
-		WorldWarp * warps;
+    short iNumStages;
+    short iNumWarps;
+    short iNumVehicles;
 
-		short iNumInitialBonuses;
-		short iInitialBonuses[32];
+    WorldMapTile ** tiles;
+    WorldPlayer player;
+    WorldVehicle * vehicles;
+    WorldWarp * warps;
 
-		short iMusicCategory;
-		
-		short iTileSize;
-		short iTileSizeShift;
-		short iTileSheet;
+    short iNumInitialBonuses;
+    short iInitialBonuses[32];
 
-		short iLastDrawRow;
-		short iLastDrawCol;
+    short iMusicCategory;
 
-		short iTilesPerCycle;
+    short iTileSize;
+    short iTileSizeShift;
+    short iTileSheet;
 
-		std::string worldName;
+    short iLastDrawRow;
+    short iLastDrawCol;
 
-	friend class MI_World;
-	friend class MI_WorldPreviewDisplay;
-	friend class WorldVehicle;
+    short iTilesPerCycle;
 
-	friend int editor_edit();
-	friend int editor_type();
-	friend int editor_stage();
-	friend int editor_start_items();
-	friend int editor_vehicles();
-	friend void NewStage(short * iEditStage);
+    std::string worldName;
 
-	friend bool AutoSetTile(short iCol, short iRow);
-	friend void AutoSetPath(short iCol, short iRow);
-	friend void AutoSetPathSprite(short iCol, short iRow);
-	friend short AdjustForeground(short iSprite, short iCol, short iRow);
-	friend bool UpdateForeground(short iCol, short iRow);
+    friend class MI_World;
+    friend class MI_WorldPreviewDisplay;
+    friend class WorldVehicle;
 
-	friend void GetForegroundTileValues(short iCol, short iRow, short iOldTiles[9]);
-	friend bool ForegroundTileValuesChanged(short iCol, short iRow, short iOldTiles[9]);
+    friend int editor_edit();
+    friend int editor_type();
+    friend int editor_stage();
+    friend int editor_start_items();
+    friend int editor_vehicles();
+    friend void NewStage(short * iEditStage);
 
-	friend void ReadVehiclesIntoEditor();
-	friend void WriteVehiclesIntoWorld();
-	friend void ReadWarpsIntoEditor();
-	friend void WriteWarpsIntoWorld();
+    friend bool AutoSetTile(short iCol, short iRow);
+    friend void AutoSetPath(short iCol, short iRow);
+    friend void AutoSetPathSprite(short iCol, short iRow);
+    friend short AdjustForeground(short iSprite, short iCol, short iRow);
+    friend bool UpdateForeground(short iCol, short iRow);
+
+    friend void GetForegroundTileValues(short iCol, short iRow, short iOldTiles[9]);
+    friend bool ForegroundTileValuesChanged(short iCol, short iRow, short iOldTiles[9]);
+
+    friend void ReadVehiclesIntoEditor();
+    friend void WriteVehiclesIntoWorld();
+    friend void ReadWarpsIntoEditor();
+    friend void WriteWarpsIntoWorld();
 };
 
 #endif //__WORLD_H_
