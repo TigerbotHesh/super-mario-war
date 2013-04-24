@@ -132,10 +132,10 @@ endif(NOT MSVC)
 
 # gcc uses some optimizations which might break stuff without this flag
 ##TODO: test this please, coming from template (1)
-add_definitions(-fno-strict-aliasing -fno-exceptions)
+add_definitions(-fno-strict-aliasing -fexceptions)
 
 ##TODO: test this please, coming from smw Makefile
-#add_definitions(-D_GNU_SOURCE=1 -D_REENTRANT)
+add_definitions(-D_GNU_SOURCE=1 -D_REENTRANT)
 
 ## MAIN CONFIG
 
@@ -152,13 +152,13 @@ set(COMMON_SRCS src/FileIO.cpp src/FileList.cpp src/MapList.cpp
            src/SFont.c src/TilesetManager.cpp src/dirlist.cpp 
            src/eyecandy.cpp src/gfx.cpp src/global.cpp src/input.cpp 
            src/map.cpp src/movingplatform.cpp src/path.cpp 
-	src/sfx.cpp src/Game.cpp
+	src/sfx.cpp
 )
 
 set(SMW_SRCS src/HashTable.cpp src/ai.cpp src/gamemodes.cpp src/main.cpp 
            src/map.cpp src/menu.cpp src/object.cpp src/player.cpp 
            src/splash.cpp src/uicontrol.cpp src/uimenu.cpp src/world.cpp src/uicustomcontrol.cpp 
-        src/objectgame.cpp src/modeoptionsmenu.cpp src/objecthazard.cpp
+        src/objectgame.cpp src/modeoptionsmenu.cpp src/objecthazard.cpp src/Game.cpp
 )
 
 set(LEVELEDIT_SRCS src/leveleditor.cpp)
