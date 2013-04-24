@@ -377,7 +377,7 @@ CPlayer * CGameMode::GetHighestScorePlayer(bool fGetHighest)
         }
     }
 
-    return list_players[tiedplayers[rand() % count]];
+    return list_players[tiedplayers[GetRandMax(count)]];
 }
 
 //Returns number of players in list
@@ -401,7 +401,7 @@ short CGameMode::GetScoreRankedPlayerList(CPlayer * players[4], bool fGetHighest
         for(short iIndex = 0; iIndex < iNumPlayersInList - 1; iIndex++) {
             if((fGetHighest && players[iIndex]->score->score < players[iIndex + 1]->score->score) ||
                     (!fGetHighest && players[iIndex]->score->score > players[iIndex + 1]->score->score) ||
-                    (players[iIndex]->score->score == players[iIndex + 1]->score->score && rand() % 2 && iRandom++ < 5)) {
+                    (players[iIndex]->score->score == players[iIndex + 1]->score->score && GetRandBool() && iRandom++ < 5)) {
                 CPlayer * pTemp = players[iIndex];
                 players[iIndex] = players[iIndex + 1];
                 players[iIndex + 1] = pTemp;
@@ -1426,7 +1426,7 @@ void CGM_Frenzy::think()
                     iSelectedPowerup = NUMFRENZYCARDS - 1;
                 } else {
                     //Randomly choose a powerup from the weighted list
-                    int iRandPowerup = rand() % iItemWeightCount + 1;
+                    int iRandPowerup = GetRandMax(iItemWeightCount) + 1;
                     iSelectedPowerup = 0;
                     int iWeightCount = game_values.gamemodesettings.frenzy.powerupweight[iSelectedPowerup];
 
@@ -1475,7 +1475,7 @@ void CGM_Survival::init()
     CGM_Classic::init();
 
     rate = 3 * game_values.gamemodesettings.survival.density;
-    timer = (short)(rand() % 21 - 10 + rate);
+    timer = (short)(GetRandMax(21) - 10 + rate);
     ratetimer = 0;
 
     iEnemyWeightCount = 0;
@@ -1500,29 +1500,30 @@ void CGM_Survival::think()
             }
 
             //Randomly choose an enemy from the weighted list
-            int iRandEnemy = rand() % iEnemyWeightCount + 1;
+            int iRandEnemy = GetRandMax(iEnemyWeightCount) + 1;
             iSelectedEnemy = 0;
             int iWeightCount = game_values.gamemodesettings.survival.enemyweight[iSelectedEnemy];
 
             while(iWeightCount < iRandEnemy)
                 iWeightCount += game_values.gamemodesettings.survival.enemyweight[++iSelectedEnemy];
 
-            if(0 == iSelectedEnemy) {
-                objectcontainer[2].add(new OMO_Thwomp(&spr_thwomp, (short)(rand() % 591), (float)game_values.gamemodesettings.survival.speed / 2.0f + (float)(rand()%20)/10.0f));
-                timer = (short)(rand() % 21 - 10 + rate);
+#pragma warning("Replace all these magic constants with proportional values")
+			if(0 == iSelectedEnemy) {
+                objectcontainer[2].add(new OMO_Thwomp(&spr_thwomp, (short)GetRandMax(smw->ScreenWidth - (640- 591)), (float)game_values.gamemodesettings.survival.speed / 2.0f + (float)(GetRandMax(20))/10.0f));
+                timer = (short)(GetRandMax(21) - 10 + rate);
             } else if(1 == iSelectedEnemy) {
-                objectcontainer[2].add(new MO_Podobo(&spr_podobo, (short)(rand() % 608), 480, -(float(rand() % 9) / 2.0f) - 8.0f, -1, -1, -1, false));
-                timer = (short)(rand() % 21 - 10 + rate - 20);
+                objectcontainer[2].add(new MO_Podobo(&spr_podobo, (short)GetRandMax(smw->ScreenWidth - (640- 608)), smw->ScreenHeight, -(float(GetRandMax(9)) / 2.0f) - 8.0f, -1, -1, -1, false));
+                timer = (short)(GetRandMax(21) - 10 + rate - 20);
             } else {
-                float dSpeed = ((float)(rand() % 21 + 20)) / 10.0f;
-                float dVel = rand() % 2 ? dSpeed : -dSpeed;
+                float dSpeed = ((float)(GetRandMax(21) + 20)) / 10.0f;
+                float dVel = GetRandBool() ? dSpeed : -dSpeed;
 
                 short x = -54;
                 if(dVel < 0)
                     x = 694;
 
-                objectcontainer[2].add(new OMO_BowserFire(&spr_bowserfire, x, (short)(rand() % 448), dVel, 0.0f, -1, -1, -1));
-                timer = (short)(rand() % 21 - 10 + rate);
+				objectcontainer[2].add(new OMO_BowserFire(&spr_bowserfire, x, (short)GetRandMax( smw->ScreenHeight - (480 - 448) ), dVel, 0.0f, -1, -1, -1));
+                timer = (short)(GetRandMax(21) - 10 + rate);
             }
         }
     }
@@ -1972,9 +1973,9 @@ void CGM_Stomp::think()
 
             //If all weights were zero, then randomly choose an enemy
             if(iEnemyWeightCount == 0) {
-                iSelectedEnemy = rand() % 9;
+                iSelectedEnemy = GetRandMax(9);
             } else { //Otherwise randomly choose an enemy from the weighted list
-                int iRandEnemy = rand() % iEnemyWeightCount + 1;
+                int iRandEnemy = GetRandMax(iEnemyWeightCount) + 1;
                 iSelectedEnemy = 0;
                 int iWeightCount = game_values.gamemodesettings.stomp.enemyweight[iSelectedEnemy];
 
@@ -1983,23 +1984,23 @@ void CGM_Stomp::think()
             }
 
             if(0 == iSelectedEnemy)
-                objectcontainer[0].add(new MO_Goomba(&spr_goomba, rand() % 2 == 0, false));
+                objectcontainer[0].add(new MO_Goomba(&spr_goomba, GetRandBool(), false));
             else if(1 == iSelectedEnemy)
-                objectcontainer[0].add(new MO_Koopa(&spr_koopa, rand() % 2 == 0, false, false, true));
+                objectcontainer[0].add(new MO_Koopa(&spr_koopa, GetRandBool(), false, false, true));
             else if(2 == iSelectedEnemy)
                 objectcontainer[2].add(new MO_CheepCheep(&spr_cheepcheep));
             else if(3 == iSelectedEnemy)
-                objectcontainer[0].add(new MO_Koopa(&spr_redkoopa, rand() % 2 == 0, true, false, false));
+                objectcontainer[0].add(new MO_Koopa(&spr_redkoopa, GetRandBool(), true, false, false));
             else if(4 == iSelectedEnemy)
-                objectcontainer[0].add(new MO_Spiny(&spr_spiny, rand() % 2 == 0));
+                objectcontainer[0].add(new MO_Spiny(&spr_spiny, GetRandBool()));
             else if(5 == iSelectedEnemy)
-                objectcontainer[0].add(new MO_BuzzyBeetle(&spr_buzzybeetle, rand() % 2 == 0));
+                objectcontainer[0].add(new MO_BuzzyBeetle(&spr_buzzybeetle, GetRandBool()));
             else if(6 == iSelectedEnemy)
-                objectcontainer[0].add(new MO_Goomba(&spr_paragoomba, rand() % 2 == 0, true));
+                objectcontainer[0].add(new MO_Goomba(&spr_paragoomba, GetRandBool(), true));
             else if(7 == iSelectedEnemy)
-                objectcontainer[0].add(new MO_Koopa(&spr_parakoopa, rand() % 2 == 0, false, true, true));
+                objectcontainer[0].add(new MO_Koopa(&spr_parakoopa, GetRandBool(), false, true, true));
             else
-                objectcontainer[0].add(new MO_Koopa(&spr_redparakoopa, rand() % 2 == 0, true, true, true));
+                objectcontainer[0].add(new MO_Koopa(&spr_redparakoopa, GetRandBool(), true, true, true));
         }
     }
 }
@@ -2972,7 +2973,7 @@ void CGM_Chase::init()
     //Add phantos based on settings
     for(short iPhanto = 0; iPhanto < 3; iPhanto++) {
         for(short iNumPhantos = 0; iNumPhantos < game_values.gamemodesettings.chase.phantoquantity[iPhanto]; iNumPhantos++)
-            objectcontainer[1].add(new OMO_Phanto(&spr_phanto, rand() % 640, rand() % 2 == 0 ? -32 - CRUNCHMAX : 480, 0.0f, 0.0f, iPhanto));
+            objectcontainer[1].add(new OMO_Phanto(&spr_phanto, rand() % 640, GetRandBool() ? -32 - CRUNCHMAX : 480, 0.0f, 0.0f, iPhanto));
     }
 
     //Add a key
@@ -3095,7 +3096,7 @@ void CGM_Boss_MiniGame::think()
         if(iBossType == 0) {
             //Randomly spawn koopas
             if(--enemytimer <= 0) {
-                objectcontainer[0].add(new MO_Koopa(&spr_koopa, rand() % 2 == 0, false, false, true));
+                objectcontainer[0].add(new MO_Koopa(&spr_koopa, GetRandBool(), false, false, true));
                 enemytimer = (short)(rand() % 120) + 120;  //Spawn koopas slowly
             }
         } else if(iBossType == 1) {
@@ -3216,11 +3217,11 @@ bool CGM_Boss_MiniGame::SetWinner(CPlayer * player)
 
     /*
     if(iBossType == 0)
-    	objectcontainer[0].add(new PU_SledgeHammerPowerup(&spr_sledgehammerpowerup, 304, -32, 1, 0, 30, 30, 1, 1));
+        objectcontainer[0].add(new PU_SledgeHammerPowerup(&spr_sledgehammerpowerup, 304, -32, 1, 0, 30, 30, 1, 1));
     else if(iBossType == 1)
-    	objectcontainer[0].add(new PU_BombPowerup(&spr_bombpowerup, 304, -32, 1, 0, 30, 30, 1, 1));
+        objectcontainer[0].add(new PU_BombPowerup(&spr_bombpowerup, 304, -32, 1, 0, 30, 30, 1, 1));
     else if(iBossType == 2)
-    	objectcontainer[0].add(new PU_PodoboPowerup(&spr_podobopowerup, 304, -32, 1, 0, 30, 30, 1, 1));
+        objectcontainer[0].add(new PU_PodoboPowerup(&spr_podobopowerup, 304, -32, 1, 0, 30, 30, 1, 1));
     */
 
     return true;
@@ -3349,12 +3350,12 @@ void CGM_Pipe_MiniGame::think()
 
             short iRandPowerup = rand() % 50;
             if(iBonusType == 0 && iRandPowerup < 5) { //bonuses
-                objectcontainer[1].add(new OMO_PipeBonus(&spr_pipegamebonus, (float)((rand() % 21) - 10) / 2.0f, -((float)(rand() % 11) / 2.0f + 7.0f), 304, 256, iRandPowerup, 620, 15));
+                objectcontainer[1].add(new OMO_PipeBonus(&spr_pipegamebonus, (float)(GetRandMax(21) - 10) / 2.0f, -((float)(rand() % 11) / 2.0f + 7.0f), 304, 256, iRandPowerup, 620, 15));
             } else if(iRandPowerup < 10) { //fireballs
-                objectcontainer[1].add(new OMO_PipeBonus(&spr_pipegamebonus, (float)((rand() % 21) - 10) / 2.0f, -((float)(rand() % 11) / 2.0f + 7.0f), 304, 256, 5, 0, 15));
+                objectcontainer[1].add(new OMO_PipeBonus(&spr_pipegamebonus, (float)(GetRandMax(21) - 10) / 2.0f, -((float)(rand() % 11) / 2.0f + 7.0f), 304, 256, 5, 0, 15));
             } else { //coins
                 short iRandCoin = rand() % 20;
-                objectcontainer[1].add(new OMO_PipeCoin(&spr_coin, (float)((rand() % 21) - 10) / 2.0f, -((float)(rand() % 11) / 2.0f + 7.0f), 304, 256, -1, iRandCoin < 16 ? 2 : (iRandCoin < 19 ? 0 : 1), 15));
+                objectcontainer[1].add(new OMO_PipeCoin(&spr_coin, (float)(GetRandMax(21) - 10) / 2.0f, -((float)GetRandMax(11) / 2.0f + 7.0f), 304, 256, -1, iRandCoin < 16 ? 2 : (iRandCoin < 19 ? 0 : 1), 15));
             }
         } else if(iBonusType == 1) {
             iNextItemTimer = rand() % 10 + 10;
@@ -3367,10 +3368,10 @@ void CGM_Pipe_MiniGame::think()
 
             short iRandPlayer = game_values.teamids[iRandTeam][rand() % game_values.teamcounts[iRandTeam]];
 
-            objectcontainer[1].add(new OMO_PipeCoin(&spr_coin, (float)((rand() % 21) - 10) / 2.0f, -((float)(rand() % 11) / 2.0f + 7.0f), 304, 256, iRandTeam, game_values.colorids[iRandPlayer], 15));
+            objectcontainer[1].add(new OMO_PipeCoin(&spr_coin, (float)((GetRandMax(21)) - 10) / 2.0f, -((float)(rand() % 11) / 2.0f + 7.0f), 304, 256, iRandTeam, game_values.colorids[iRandPlayer], 15));
         } else if(iBonusType == 3) {
             iNextItemTimer = rand() % 5 + 10;
-            objectcontainer[1].add(new OMO_PipeCoin(&spr_coin, (float)((rand() % 21) - 10) / 2.0f, -((float)(rand() % 11) / 2.0f + 7.0f), 304, 256, -1, 0, 15));
+            objectcontainer[1].add(new OMO_PipeCoin(&spr_coin, (float)((GetRandMax(21)) - 10) / 2.0f, -((float)GetRandMax(11) / 2.0f + 7.0f), 304, 256, -1, 0, 15));
         }
     }
 
@@ -3426,7 +3427,7 @@ void CGM_Pipe_MiniGame::SetBonus(short iType, short iTimer, short iTeamID)
 
     //This is the random bonus
     if(iBonusType == 5)
-        iBonusType = rand() % 4 + 1;
+        iBonusType = GetRandMax(4) + 1;
 
     if(iBonusType == 4)
         fSlowdown = true;
@@ -3586,8 +3587,8 @@ void CGM_Boxes_MiniGame::ReleaseCoin(CPlayer &player)
         short ix = player.ix + HALFPW - 16;
         short iy = player.iy + HALFPH - 16;
 
-        float vel = 7.0f + (float)(rand() % 9) / 2.0f;
-        float angle = -(float)(rand() % 314) / 100.0f;
+        float vel = 7.0f + (float)GetRandMax(9) / 2.0f;
+        float angle = -(float)GetRandMax(314) / 100.0f;
         float velx = vel * cos(angle);
         float vely = vel * sin(angle);
 

@@ -4,6 +4,8 @@
 #include "gfx.h"
 extern bool g_fLoadMessages;
 
+#include <cassert>
+
 //1.8.0.0 == Release to staff
 //1.8.0.1 == Second release to staff
 //1.8.0.2 == beta1
@@ -14,6 +16,40 @@ int g_iVersion[] = {1, 9, 0, 0};
 
 // main game directory, read from command line argument
 char		*RootDataDirectory;
+
+CGame	*smw;
+
+// generate uniformly distributed random number
+// rMax is not part of the set
+int	GetRandMax(int rMax)
+{
+    const int rMin = 0;
+
+    assert(rMax > rMin);
+    
+    int rVal = ((double) rand() / (RAND_MAX+1)) * (rMax-rMin) + rMin;
+
+    assert(rVal < rMax && rVal >= 0);
+
+    return rVal;
+}
+
+bool GetRandBool()
+{
+    return GetRandBool(2);
+}
+
+bool GetRandBool(int scaleMax)
+{
+    // TODO: always match center of range, like (scaleMax/2 - 1)
+    return 0 == GetRandMax(scaleMax);
+}
+
+bool GetRandBool(int scaleMax, int positiveThreshold)
+{
+    assert(positiveThreshold < scaleMax && positiveThreshold >= 0);
+    return GetRandMax(scaleMax) > positiveThreshold;
+}
 
 bool VersionIsEqual(int iVersion[], short iMajor, short iMinor, short iMicro, short iBuild)
 {
@@ -1323,6 +1359,7 @@ void ResetTourStops()
     game_values.tourstopcurrent = 0;
     game_values.tourstoptotal = 0;
 
+    // we have an exception here
     game_values.tourstops.clear();
 }
 

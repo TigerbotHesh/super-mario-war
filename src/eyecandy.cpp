@@ -132,10 +132,10 @@ void EC_Cloud::update()
 {
     dx += velx;
 
-    if(dx > 640.0f)
-        dx -= 640.0f;
+    if(dx > smw->ScreenWidth)
+        dx -= smw->ScreenWidth;
     else if(dx < 0.0f)
-        dx += 640.0f;
+        dx += smw->ScreenWidth;
 
     ix = (short)dx;
 }
@@ -158,10 +158,10 @@ void EC_Ghost::update()
 
     dx += velx;
 
-    if(dx >= 640.0f)
-        dx -= 640.0f;
+    if(dx >= smw->ScreenWidth)
+        dx -= smw->ScreenWidth;
     else if(dx < 0.0f)
-        dx += 640.0f;
+        dx += smw->ScreenWidth;
 
     ix = (short)dx;
     iy = (short)dy;
@@ -187,19 +187,19 @@ void EC_Leaf::update()
     dx += velx + game_values.gamewindx;
     dy += vely + game_values.gamewindy;
 
-    if(dx >= 640.0f)
-        dx -= 640.0f;
+    if(dx >= smw->ScreenWidth)
+        dx -= smw->ScreenWidth;
     else if(dx < 0.0f)
-        dx += 640.0f;
+        dx += smw->ScreenWidth;
 
     if(vely > 0.0f && iy >= 480) {
         dy = -16.0f;
-        dx = (float)(rand() % 640);
+        dx = GetRandMax(smw->ScreenWidth);
 
         NextLeaf();
     } else if(vely < 0.0f && iy < -16) {
         dy = 480.0f;
-        dx = (float)(rand() % 640);
+        dx = GetRandMax(smw->ScreenWidth);
 
         NextLeaf();
     }
@@ -210,7 +210,7 @@ void EC_Leaf::update()
 
 void EC_Leaf::NextLeaf()
 {
-    short iRand = rand() % 20;
+    short iRand = GetRandMax(20);
     if(iRand < 12)
         iAnimationY = 0;
     else if(iRand < 15)
@@ -220,25 +220,25 @@ void EC_Leaf::NextLeaf()
     else
         iAnimationY = 48;
 
-    velx = (float)(rand() % 9) / 4.0f;
-    vely = (float)(rand() % 9) / 4.0f + 1.0f;
+    velx = GetRandMax(9) / 4.0f;
+    vely = GetRandMax(9) / 4.0f + 1.0f;
 
-    fForward = (rand() % 2) == 0;
-    iAnimationFrame = ((rand() % 3) + (fForward ? 0 : 1)) * iAnimationW;
-    iAnimationTimer = rand() % 16;
+    fForward = GetRandBool();
+    iAnimationFrame = (GetRandMax(3) + (fForward ? 0 : 1)) * iAnimationW;
+    iAnimationTimer = GetRandMax(16);
 }
 
 //------------------------------------------------------------------------------
 // class snow
 //------------------------------------------------------------------------------
 EC_Snow::EC_Snow(gfxSprite *nspr, float nx, float ny, short type) :
-    EC_StillImage(nspr, (short)nx, (short)ny, (rand() % 2) << 4, type << 4, 16, 16)
+    EC_StillImage(nspr, (short)nx, (short)ny, GetRandBool() << 4, type << 4, 16, 16)
 {
     dx = nx;
     dy = ny;
 
-    velx = (float)(rand() % 9) / 4.0f;
-    vely = (float)(rand() % 9) / 4.0f + 1.0f;
+    velx = GetRandMax(9) / 4.0f;
+    vely = GetRandMax(9) / 4.0f + 1.0f;
 }
 
 void EC_Snow::update()
@@ -246,17 +246,17 @@ void EC_Snow::update()
     dx += velx + game_values.gamewindx;
     dy += vely + game_values.gamewindy;
 
-    if(dx >= 640.0f)
-        dx -= 640.0f;
+    if(dx >= smw->ScreenWidth)
+        dx -= smw->ScreenWidth;
     else if(dx < 0.0f)
-        dx += 640.0f;
+        dx += smw->ScreenWidth;
 
     if(vely > 0.0f && iy >= 480) {
         dy = -16.0f;
-        dx = (float)(rand() % 640);
+        dx = GetRandMax(smw->ScreenWidth);
     } else if(vely < 0.0f && iy < -16) {
         dy = 480.0f;
-        dx = (float)(rand() % 640);
+        dx = GetRandMax(smw->ScreenWidth);
     }
 
     ix = (short)dx;
@@ -282,7 +282,7 @@ void EC_Rain::update()
 
     //If rain is off left edge, wrap it
     if(dx < 0.0f)
-        dx += 640.0f;
+        dx += smw->ScreenWidth;
 
     //If rain is off bottom edge, change the rain gfx and start it from the top
     if(iy >= 480)
@@ -294,13 +294,13 @@ void EC_Rain::update()
 
 void EC_Rain::NextRainDrop()
 {
-    velx = -5.0f + (float)(rand() % 5) / 4.0f;
-    vely = 4.0f + (float)(rand() % 5) / 4.0f;
+    velx = -5.0f + GetRandMax(5) / 4.0f;
+    vely = 4.0f + GetRandMax(5) / 4.0f;
 
     dy = -16.0f;
-    dx = (float)(rand() % 640);
+    dx = GetRandMax(smw->ScreenWidth);
 
-    iSrcX = (rand() % 8) * 10;
+    iSrcX = GetRandMax(8) * 10;
 }
 
 
@@ -324,9 +324,9 @@ void EC_Bubble::update()
 
     //If bubble is off the edges, wrap it
     if(dx < 0.0f)
-        dx += 640.0f;
-    else if(dx + iAnimationW >= 640.0f)
-        dx -= 640.0f;
+        dx += smw->ScreenWidth;
+    else if(dx + iAnimationW >= smw->ScreenWidth)
+        dx -= smw->ScreenWidth;
 
     //If bubble is off top edge, move it back to the bottom to start again
     if(iy + iAnimationH < 0)
@@ -338,13 +338,13 @@ void EC_Bubble::update()
 
 void EC_Bubble::NextBubble()
 {
-    velx = -1.0f + (float)(rand() % 9) / 4.0f;
-    vely = -4.0f + (float)(rand() % 9) / 4.0f;
+    velx = -1.0f + GetRandMax(9) / 4.0f;
+    vely = -4.0f + GetRandMax(9) / 4.0f;
 
     dy = 480.0f;
-    dx = (float)(rand() % 640);
+    dx = GetRandMax(smw->ScreenWidth);
 
-    iAnimationFrame = (rand() % 4) << 4;
+    iAnimationFrame = GetRandMax(4) << 4;
 }
 
 //------------------------------------------------------------------------------
@@ -626,27 +626,27 @@ void EC_LoopingAnimation::update()
 //------------------------------------------------------------------------------
 /*
 EC_Award::EC_Award(gfxSprite *nspr, short ix, short iy, short destx, short desty, short iframes, short irate) :
-	EC_LoopingAnimation(nspr, ix, iy, iframes, irate, 0)
+    EC_LoopingAnimation(nspr, ix, iy, iframes, irate, 0)
 {
-	dx = (float)destx;
-	dy = (float)desty;
+    dx = (float)destx;
+    dy = (float)desty;
 
-	velx = (dx - x) / 100.0f;
-	vely = (dy - y) / 100.0f;
+    velx = (dx - x) / 100.0f;
+    vely = (dy - y) / 100.0f;
 }
 
 
 void EC_Award::update()
 {
-	EC_LoopingAnimation::update();
+    EC_LoopingAnimation::update();
 
-	x += velx;
-	y += vely;
+    x += velx;
+    y += vely;
 
-	if( fabsf(dx - x) < fabsf(velx) && fabsf(dy - y) < fabsf(vely))
-	{
-		dead = true;
-	}
+    if( fabsf(dx - x) < fabsf(velx) && fabsf(dy - y) < fabsf(vely))
+    {
+        dead = true;
+    }
 }
 */
 
@@ -901,7 +901,7 @@ void EC_SoulsAward::update()
         float addangle = QUARTER_PI / 20.0f;
         float startangle = -HALF_PI;
 
-        float angle = (float)(rand()%21 - 10) * addangle + startangle;
+        float angle = (float)(GetRandMax(21) - 10) * addangle + startangle;
         float velx = speed * cos(angle);
         float vely = speed * sin(angle);
 
@@ -1010,52 +1010,52 @@ void EC_Door::draw()
 //------------------------------------------------------------------------------
 /*
 EC_BossPeeker::EC_BossPeeker(gfxSprite *nspr, short speed, short bossType) :
-	CEyecandy()
+    CEyecandy()
 {
-	spr = nspr;
-	iSpeed = speed;
-	iBossColorOffsetY = bossType * 64;
+    spr = nspr;
+    iSpeed = speed;
+    iBossColorOffsetY = bossType * 64;
 
-	timer = 0;
-	state = 0;
-	ix = 592;
-	iy = 480;
+    timer = 0;
+    state = 0;
+    ix = 592;
+    iy = 480;
 
-	game_values.bosspeeking = bossType;
+    game_values.bosspeeking = bossType;
 }
 
 
 void EC_BossPeeker::update()
 {
-	if(state == 0)
-	{
-		iy -= 2;
-		if(iy <= 432)
-		{
-			iy = 432;
-			state = 1;
-		}
-	}
-	else if(state == 1)
-	{
-		if(++timer == iSpeed)
-			state = 2;
-	}
-	else if(state == 2)
-	{
-		iy += 2;
-		if(iy >= 480)
-		{
-			dead = true;
-			game_values.bosspeeking = -1;
-		}
-	}
+    if(state == 0)
+    {
+        iy -= 2;
+        if(iy <= 432)
+        {
+            iy = 432;
+            state = 1;
+        }
+    }
+    else if(state == 1)
+    {
+        if(++timer == iSpeed)
+            state = 2;
+    }
+    else if(state == 2)
+    {
+        iy += 2;
+        if(iy >= 480)
+        {
+            dead = true;
+            game_values.bosspeeking = -1;
+        }
+    }
 }
 
 
 void EC_BossPeeker::draw()
 {
-	spr->draw(ix, iy, 192, iBossColorOffsetY, 48, 64);
+    spr->draw(ix, iy, 192, iBossColorOffsetY, 48, 64);
 }
 */
 
@@ -1272,33 +1272,33 @@ void Spotlight::Draw()
 
     if(ix - iHalfWidth < 0)
     {
-    	SDL_Rect rDstWrap = {ix - iHalfWidth + 640, iy - iHalfWidth, iWidth, iWidth};
-    	SDL_BlitSurface(spr_overlayhole.getSurface(), &rSrc, spr_overlay.getSurface(), &rDstWrap);
+        SDL_Rect rDstWrap = {ix - iHalfWidth + 640, iy - iHalfWidth, iWidth, iWidth};
+        SDL_BlitSurface(spr_overlayhole.getSurface(), &rSrc, spr_overlay.getSurface(), &rDstWrap);
     }
     else if(ix + iHalfWidth >= 640)
     {
-    	SDL_Rect rDstWrap = {ix - iHalfWidth - 640, iy - iHalfWidth, iWidth, iWidth};
-    	SDL_BlitSurface(spr_overlayhole.getSurface(), &rSrc, spr_overlay.getSurface(), &rDstWrap);
+        SDL_Rect rDstWrap = {ix - iHalfWidth - 640, iy - iHalfWidth, iWidth, iWidth};
+        SDL_BlitSurface(spr_overlayhole.getSurface(), &rSrc, spr_overlay.getSurface(), &rDstWrap);
     }
 
     if(iTransparency <= 255 && iTransparency > 0)
     {
-    	spr_overlayhole.setalpha((Uint8)iTransparency);
+        spr_overlayhole.setalpha((Uint8)iTransparency);
 
-    	SDL_Rect rTransSrc = {iSpotlightValues[iSize][2], 128, iWidth, iWidth};
-    	SDL_Rect rTransDst = {ix - iHalfWidth, iy - iHalfWidth, iWidth, iWidth};
-    	SDL_BlitSurface(spr_overlayhole.getSurface(), &rTransSrc, blitdest, &rTransDst);
+        SDL_Rect rTransSrc = {iSpotlightValues[iSize][2], 128, iWidth, iWidth};
+        SDL_Rect rTransDst = {ix - iHalfWidth, iy - iHalfWidth, iWidth, iWidth};
+        SDL_BlitSurface(spr_overlayhole.getSurface(), &rTransSrc, blitdest, &rTransDst);
 
-    	if(ix - iHalfWidth < 0)
-    	{
-    		SDL_Rect rTransDstWrap = {ix - iHalfWidth + 640, iy - iHalfWidth, iWidth, iWidth};
-    		SDL_BlitSurface(spr_overlayhole.getSurface(), &rTransSrc, blitdest, &rTransDstWrap);
-    	}
-    	else if(ix + iHalfWidth >= 640)
-    	{
-    		SDL_Rect rTransDstWrap = {ix - iHalfWidth - 640, iy - iHalfWidth, iWidth, iWidth};
-    		SDL_BlitSurface(spr_overlayhole.getSurface(), &rTransSrc, blitdest, &rTransDstWrap);
-    	}
+        if(ix - iHalfWidth < 0)
+        {
+            SDL_Rect rTransDstWrap = {ix - iHalfWidth + 640, iy - iHalfWidth, iWidth, iWidth};
+            SDL_BlitSurface(spr_overlayhole.getSurface(), &rTransSrc, blitdest, &rTransDstWrap);
+        }
+        else if(ix + iHalfWidth >= 640)
+        {
+            SDL_Rect rTransDstWrap = {ix - iHalfWidth - 640, iy - iHalfWidth, iWidth, iWidth};
+            SDL_BlitSurface(spr_overlayhole.getSurface(), &rTransSrc, blitdest, &rTransDstWrap);
+        }
     }*/
 }
 

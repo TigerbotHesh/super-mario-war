@@ -38,7 +38,7 @@ SimpleFileList::SimpleFileList(const std::string &path, const std::string &exten
     currentIndex = 0;
 
     if(filelist.empty()) {
-#pragma warning Print this line to log
+#pragma warning "Print this line to log"
         //printf("ERROR: Empty directory!\n");
         currentIndex = -1;
     }
@@ -515,21 +515,21 @@ string MusicEntry::GetRandomMusic(int iMusicCategory, const char * szMapName, co
     //First check if there is specific map music
     if(fUsesMapOverrides && mapoverride.find(szMapName) != mapoverride.end()) {
         if(mapoverride[szMapName]->songs.size() > 0) {
-            iCurrentMusic = rand() % mapoverride[szMapName]->songs.size();
+            iCurrentMusic = GetRandMax( mapoverride[szMapName]->songs.size());
             return songFileNames[mapoverride[szMapName]->songs[iCurrentMusic]];
         }
     }
     //Then check if there is specific background music
     if(fUsesBackgroundOverrides && backgroundoverride.find(szBackground) != backgroundoverride.end()) {
         if(backgroundoverride[szBackground]->songs.size() > 0) {
-            iCurrentMusic = rand() % backgroundoverride[szBackground]->songs.size();
+            iCurrentMusic = GetRandMax(backgroundoverride[szBackground]->songs.size());
             return songFileNames[backgroundoverride[szBackground]->songs[iCurrentMusic]];
         }
     }
 
     //Then default to the music category
     if(iMusicCategory >= 0 && iMusicCategory < MAXMUSICCATEGORY && numsongsforcategory[iMusicCategory] > 0) {
-        iCurrentMusic = rand() % numsongsforcategory[iMusicCategory];
+        iCurrentMusic = GetRandMax( numsongsforcategory[iMusicCategory]);
         return songFileNames[songsforcategory[iMusicCategory][iCurrentMusic]];
     }
 

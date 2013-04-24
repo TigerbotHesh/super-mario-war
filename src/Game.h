@@ -14,6 +14,9 @@ public:
 
     // run all the game logic
     void Go();
+
+	int ScreenWidth;
+	int ScreenHeight;
 //private:
 
 };

@@ -2933,7 +2933,7 @@ void MI_BonusWheel::Reset(bool fTournament)
         iCountWeight += game_values.powerupweights[iPowerup];
 
     //Always have at least 1 poison mushroom to try to avoid
-    short iPoisonMushroom = rand() % NUMBONUSITEMSONWHEEL;
+    short iPoisonMushroom = GetRandMax(NUMBONUSITEMSONWHEEL);
 
     for(short iPowerup = 0; iPowerup < NUMBONUSITEMSONWHEEL; iPowerup++) {
         int iChoosePowerup = 0;

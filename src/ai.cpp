@@ -281,7 +281,7 @@ void CPlayerAI::Think(COutputControl * playerKeys)
     playerKeys->game_right.fDown = false;
 
     //A percentage of the time the cpu will do nothing based on the difficulty level
-    if(rand() % 100 > iDecisionPercentage[game_values.cpudifficulty] && pPlayer->isready())
+    if (GetRandBool(100, iDecisionPercentage[game_values.cpudifficulty]) && pPlayer->isready())
         return;
 
     playerKeys->game_jump.fDown = false;
@@ -377,7 +377,7 @@ void CPlayerAI::Think(COutputControl * playerKeys)
             if(nearestObjects.playerdistance <= 4096 || nearestObjects.stompdistance <= 4096 || nearestObjects.threatdistance <= 4096)
                 playerKeys->game_turbo.fDown = true;
         } else {
-            if(pPlayer->powerup == -1 || !(rand() % 20))
+            if(pPlayer->powerup == -1 || !GetRandBool(20))
                 playerKeys->game_turbo.fDown = true;
 
             if(carriedItem) {
@@ -458,7 +458,7 @@ void CPlayerAI::Think(COutputControl * playerKeys)
                 playerKeys->game_jump.fDown = true;
             } else if (player->iy > iy &&			//try to down jump if player is below us
                        player->ix - ix < 45 &&
-                       player->ix - ix > -45 && rand() % 2) {
+                       player->ix - ix > -45 && GetRandBool()) {
                 //or if player is high
                 playerKeys->game_jump.fDown = true;
                 playerKeys->game_down.fDown = true;
@@ -476,7 +476,7 @@ void CPlayerAI::Think(COutputControl * playerKeys)
             } else if(iy - player->iy > 70) { //If the player is significatly below us, then jump
                 playerKeys->game_jump.fDown = true;
             } else {
-                if(!(rand() % 60))
+                if(!GetRandBool(60))
                     playerKeys->game_jump.fDown = true;
             }
         } else if(actionType == 1) { //Go for goal
@@ -495,7 +495,7 @@ void CPlayerAI::Think(COutputControl * playerKeys)
             } else if(iy - goal->iy > 70) {
                 playerKeys->game_jump.fDown = true;
             } else {
-                if(!(rand() % 60))
+                if(!GetRandBool(60))
                     playerKeys->game_jump.fDown = true;
             }
 
@@ -559,7 +559,7 @@ void CPlayerAI::Think(COutputControl * playerKeys)
             } else if(iy - teammate->iy > 70) {
                 playerKeys->game_jump.fDown = true;
             } else {
-                if(!(rand() % 60))
+                if(!GetRandBool(60))
                     playerKeys->game_jump.fDown = true;
             }
         } else if(actionType == 4) { //Stomp something (goomba, koopa, cheepcheep)
@@ -604,7 +604,7 @@ void CPlayerAI::Think(COutputControl * playerKeys)
                     }
                 }
             } else {
-                if(!(rand() % 60))
+                if(!GetRandBool(60))
                     playerKeys->game_jump.fDown = true;
             }
         }
@@ -672,8 +672,8 @@ void CPlayerAI::Think(COutputControl * playerKeys)
     short iDeathX1 = ix / TILESIZE;
     short iDeathX2;
 
-    if(ix + PW >= 640)
-        iDeathX2 = (ix + PW - 640) / TILESIZE;
+    if(ix + PW >= smw->ScreenWidth)
+        iDeathX2 = (ix + PW - smw->ScreenWidth) / TILESIZE;
     else
         iDeathX2 = (ix + PW) / TILESIZE;
 
@@ -1197,10 +1197,10 @@ void CPlayerAI::DistanceToObject(CObject * object, CObject ** target, int * near
 
     //See if it is a shorter distance wrapping around the screen
     if(tx > 320) {
-        tx = 640 - tx;
+        tx = smw->ScreenWidth - tx;
         fScreenWrap = true;
     } else if(tx < -320) {
-        tx = 640 + tx;
+        tx = smw->ScreenWidth + tx;
         fScreenWrap = true;
     }
 
@@ -1221,10 +1221,10 @@ void CPlayerAI::DistanceToObjectCenter(CObject * object, CObject ** target, int 
     bool fScreenWrap = false;
 
     if(tx > 320) {
-        tx = 640 - tx;
+        tx = smw->ScreenWidth - tx;
         fScreenWrap = true;
     } else if(tx < -320) {
-        tx = 640 + tx;
+        tx = smw->ScreenWidth + tx;
         fScreenWrap = true;
     }
 
@@ -1246,10 +1246,10 @@ void CPlayerAI::DistanceToPlayer(CPlayer * player, CPlayer ** target, int * near
     bool fScreenWrap = false;
 
     if(tx > 320) {
-        tx = 640 - tx;
+        tx = smw->ScreenWidth - tx;
         fScreenWrap = true;
     } else if(tx < -320) {
-        tx = 640 + tx;
+        tx = smw->ScreenWidth + tx;
         fScreenWrap = true;
     }
 
@@ -1287,7 +1287,7 @@ void CSimpleAI::Think(COutputControl * playerKeys)
             playerKeys->game_jump.fDown = true;
     } else {
         //Try to jump 1 out of 50 chances when on ground
-        if(rand() % 50 == 0)
+        if (GetRandBool(50))
             playerKeys->game_jump.fDown = true;
         else
             playerKeys->game_jump.fDown = false;

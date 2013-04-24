@@ -438,6 +438,7 @@ void MI_SelectField::Draw()
     if(iIndent> 0)
         menu_font_large.drawChopRight(ix + 16, iy + 5, iIndent - 8, szName);
 
+	// RFC
     if(!items.empty()) {
         if(iIndent > 0)
             menu_font_large.drawChopRight(ix + iIndent + 8, iy + 5, iWidth - iIndent - 24, (*current)->sName.c_str());
@@ -445,10 +446,29 @@ void MI_SelectField::Draw()
             menu_font_large.drawChopRight(ix + 16, iy + 5, iWidth - 32, (*current)->sName.c_str());
     }
 
-    if(current != items.begin() || !fNoWrap)
+    //TODO: invert order
+	bool drawLeft = true;
+    
+	if((items.begin() != items.end() && current == items.begin()))
+		drawLeft = false;
+
+	if (!fNoWrap || drawLeft)
         miModifyImageLeft->Draw();
 
-    if(current != --items.end() || !fNoWrap)
+    //TODO: invert order
+
+	bool drawRight = true;
+
+		if (items.end() != items.begin()) {
+
+			if (items.begin() != --items.end()) {
+
+				if (current == --items.end())
+					drawRight = false;
+			}
+		}
+
+    if(drawRight || !fNoWrap)
         miModifyImageRight->Draw();
 }
 
@@ -1763,32 +1783,32 @@ MenuCodeEnum MI_MapField::SendInput(CPlayerInput * playerInput)
     /*
     if(playerInput->iPressedKey > 0)
     {
-    	else if(playerInput->iPressedKey == SDLK_PAGEUP)
-    	{
-    		short iOldIndex = maplist->GetCurrent()->second->iIndex;
-    		maplist->prev(true);
+        else if(playerInput->iPressedKey == SDLK_PAGEUP)
+        {
+            short iOldIndex = maplist->GetCurrent()->second->iIndex;
+            maplist->prev(true);
 
-    		if(iOldIndex != maplist->GetCurrent()->second->iIndex)
-    		{
-    			LoadCurrentMap();
-    			return MENU_CODE_MAP_CHANGED;
-    		}
+            if(iOldIndex != maplist->GetCurrent()->second->iIndex)
+            {
+                LoadCurrentMap();
+                return MENU_CODE_MAP_CHANGED;
+            }
 
-    		return MENU_CODE_NONE;
-    	}
-    	else if(playerInput->iPressedKey == SDLK_PAGEDOWN)
-    	{
-    		short iOldIndex = maplist->GetCurrent()->second->iIndex;
-    		maplist->next(true);
+            return MENU_CODE_NONE;
+        }
+        else if(playerInput->iPressedKey == SDLK_PAGEDOWN)
+        {
+            short iOldIndex = maplist->GetCurrent()->second->iIndex;
+            maplist->next(true);
 
-    		if(iOldIndex != maplist->GetCurrent()->second->iIndex)
-    		{
-    			LoadCurrentMap();
-    			return MENU_CODE_MAP_CHANGED;
-    		}
+            if(iOldIndex != maplist->GetCurrent()->second->iIndex)
+            {
+                LoadCurrentMap();
+                return MENU_CODE_MAP_CHANGED;
+            }
 
-    		return MENU_CODE_NONE;
-    	}
+            return MENU_CODE_NONE;
+        }
     }
     */
 

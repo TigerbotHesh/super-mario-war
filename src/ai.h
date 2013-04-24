@@ -3,6 +3,10 @@
 
 class CObject;
 
+#include "Game.h"
+
+extern CGame *smw;
+
 class NearestObjects
 {
 public:
@@ -18,11 +22,11 @@ public:
         teammate = NULL;
         threat = NULL;
 
-        playerdistance = 640000;
-        goaldistance = 640000;
-        stompdistance = 640000;
-        teammatedistance = 640000;
-        threatdistance = 640000;
+        playerdistance = smw->ScreenWidth * 1000;
+        goaldistance = smw->ScreenWidth * 1000;
+        stompdistance = smw->ScreenWidth * 1000;
+        teammatedistance = smw->ScreenWidth * 1000;
+        threatdistance = smw->ScreenWidth * 1000;
 
         playerwrap = false;
         goalwrap = false;
