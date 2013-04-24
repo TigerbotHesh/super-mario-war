@@ -152,7 +152,7 @@ set(COMMON_SRCS src/FileIO.cpp src/FileList.cpp src/MapList.cpp
            src/SFont.c src/TilesetManager.cpp src/dirlist.cpp 
            src/eyecandy.cpp src/gfx.cpp src/global.cpp src/input.cpp 
            src/map.cpp src/movingplatform.cpp src/path.cpp 
-	src/sfx.cpp
+	src/sfx.cpp src/Game.cpp
 )
 
 set(SMW_SRCS src/HashTable.cpp src/ai.cpp src/gamemodes.cpp src/main.cpp 
