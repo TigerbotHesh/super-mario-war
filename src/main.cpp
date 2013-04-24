@@ -1107,6 +1107,11 @@ gv game_values;
 int CALLBACK WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,int nCmdShow)
 {
     RootDataDirectory = lpCmdLine;
+
+	if (strlen(RootDataDirectory) == 0){
+	fprintf(stderr, "Please specify root data directory\n");
+        return -1;
+    }
 #else
 // ------ MAIN ------
 int main(int argc, char *argv[])
