@@ -50,7 +50,7 @@ DirectoryListing::DirectoryListing(string path, string file_ext)
     /* Windows Directory Enumeration*/
     #ifdef _WIN32
 
-		string search = path+"*";
+        string search = path+"*";
         findhandle = FindFirstFile(search.c_str(), &finddata);
         Success = findhandle != INVALID_HANDLE_VALUE;
         Stored_Filename = finddata.cFileName;
@@ -135,15 +135,15 @@ bool DirectoryListing :: operator() (string &s)
 
 bool DirectoryListing :: NextDirectory (string &s)
 {
-	if (!Success) return false;
+    if (!Success) return false;
 
     bool retval;
         /* Microsoft directory enumeration - here we retval = a stored filename first,
          * and then fetch the next directory from microsoft */
 #ifdef _WIN32
 
-	struct stat fileinfo;
-	do
+    struct stat fileinfo;
+    do
     {
         /* If we have a filename stored.. */
         if (Stored_Filename.size())
@@ -163,9 +163,9 @@ bool DirectoryListing :: NextDirectory (string &s)
         /* No files remain */
         else 
             retval = false;
-	}
+    }
     //while (retval == true && ((GetFileAttributes(s.c_str()) & FILE_ATTRIBUTE_DIRECTORY) == 0 || s == "." || s == ".." || s == "CVS" || s == ".svn"));
-	while (retval == true && (stat(fullName(s).c_str(), &fileinfo) == -1 || (fileinfo.st_mode & _S_IFDIR) == 0 || s == "." || s == ".." || s == "CVS" || s == ".svn"));
+    while (retval == true && (stat(fullName(s).c_str(), &fileinfo) == -1 || (fileinfo.st_mode & _S_IFDIR) == 0 || s == "." || s == ".." || s == "CVS" || s == ".svn"));
 
 #else /* POSIX directory enumeration - more straightforward */
 

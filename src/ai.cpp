@@ -233,7 +233,7 @@ CPlayerAI::~CPlayerAI()
 //Setup AI so that it can ignore or pay attention to some objects
 void CPlayerAI::Init()
 {
-	//Scan yoshi's egg mode objects to make sure that we ignore eggs with out matching yoshis
+	//Scan yoshi's egg mode objects to make sure that we ignore eggs without matching yoshis
 	if(game_values.gamemode->gamemode == game_mode_eggs)
 	{
 		bool fYoshi[4] = {false, false, false, false};
