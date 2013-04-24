@@ -1,13 +1,13 @@
 
 ------------------------------------------------------------------------------
  Super Mario War 1.7 April Fools Edition ReadMe
-                                                                 2004-2006 (C)
+                                                                   2004-2006 ©
                                         Florian Hufsky, Two52 and contributors
 
 
-                                                ORIGINAL GRAPHICS (C) NINTENDO
-                                                  ORIGINAL SOUNDS (C) NINTENDO
-         GRAPHICS AND AUDIO FROM FAN-MADE CONTENT (C) THEIR RESPECTIVE HOLDERS
+                                                  ORIGINAL GRAPHICS © NINTENDO
+                                                    ORIGINAL SOUNDS © NINTENDO
+           GRAPHICS AND AUDIO FROM FAN-MADE CONTENT © THEIR RESPECTIVE HOLDERS
 
                                         Original game concept: Samuele Poletto
 
