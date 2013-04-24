@@ -456,7 +456,7 @@ public:
 private:
     short ix, iy;
     short iEndSize;
-    //short iTransparency;
+    short iTransparency;
     short iState;
     bool fUpdated;
 
